@@ -2120,7 +2120,7 @@ addLevelMods model character statName =
 viewHeader : Model -> Html Msg
 viewHeader model =
     nav [ class "navbar navbar-expand-lg navbar-dark bg-primary" ]
-        [ span [ class "navbar-brand" ] [ text "Dī Penātēs v0.3.0" ]
+        [ span [ class "navbar-brand" ] [ text "Dī Penātēs v0.4.0" ]
         , select
             [ onInput ChangeCharacter
             , class
@@ -3550,7 +3550,11 @@ contentSidePanel =
     """
 # World Summary
 
+Dī Penātēs Solar Crawler makes its way slowly across the system...
 
+Select your character and their level in the menu dropdowns above. You can
+select actions to perform; for some actions, make a roll to determine possible
+consequences.
 
 """
 

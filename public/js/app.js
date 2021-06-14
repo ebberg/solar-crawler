@@ -5014,27 +5014,27 @@ var author$project$Main$TheScientist = {$: 'TheScientist'};
 var author$project$Main$TheSecurity = {$: 'TheSecurity'};
 var author$project$Main$playerToCharacterType = function (s) {
 	switch (s) {
-		case 'GM':
+		case 'The Director - GM':
 			return author$project$Main$TheDirector;
-		case 'Captain Lola (Paladin)':
+		case 'The Captain - Paladin':
 			return author$project$Main$TheCaptain;
-		case 'Dar (Bard)':
+		case 'The First Mate - Bard':
 			return author$project$Main$TheFirstMate;
-		case 'Ix (Fighter)':
+		case 'The Security Officer - Fighter':
 			return author$project$Main$TheSecurity;
-		case 'Tommy the Cat (Thief)':
+		case 'The Intelligence Officer - Thief':
 			return author$project$Main$TheIntelligence;
-		case 'Mac (Wizard)':
+		case 'The Pilot - Wizard':
 			return author$project$Main$ThePilot;
-		case 'Drav (Cleric)':
+		case 'The Biomechanic - Cleric':
 			return author$project$Main$TheBiomechanic;
-		case 'Aero (Druid)':
+		case 'The Engineer - Druid':
 			return author$project$Main$TheEngineer;
-		case 'Dr Pachinka (Barbarian)':
+		case 'The Scientist - Barbarian':
 			return author$project$Main$TheScientist;
-		case 'ZarrN (Ranger)':
+		case 'The Navigation Officer - Ranger':
 			return author$project$Main$TheNavigator;
-		case 'Select Player':
+		case 'Select Character':
 			return author$project$Main$SelectCharacter;
 		default:
 			return author$project$Main$CharacterTypeError;
@@ -6605,7 +6605,7 @@ var author$project$Main$update = F2(
 					elm$core$Platform$Cmd$none);
 		}
 	});
-var author$project$Main$contentSidePanel = '\n# Dī Penātēs Solar Crawler\n\nDī Penātēs Solar Crawler crawls its way across the solar system.\n';
+var author$project$Main$contentSidePanel = '\n# World Summary\n\nDī Penātēs Solar Crawler makes its way slowly across the system...\n\nSelect your character and their level in the menu dropdowns above. You can\nselect actions to perform; for some actions, make a roll to determine possible\nconsequences.\n\n';
 var elm$json$Json$Decode$map = _Json_map1;
 var elm$json$Json$Decode$map2 = _Json_map2;
 var elm$json$Json$Decode$succeed = _Json_succeed;
@@ -7797,7 +7797,6 @@ var author$project$Main$viewContent = function (model) {
 		_List_Nil,
 		_List_fromArray(
 			[
-				author$project$Main$viewCharacterName(model),
 				A2(
 				elm$html$Html$div,
 				_List_fromArray(
@@ -7814,6 +7813,7 @@ var author$project$Main$viewContent = function (model) {
 							]),
 						_List_fromArray(
 							[
+								author$project$Main$viewCharacterName(model),
 								author$project$Main$viewMenu(model),
 								A2(elm$html$Html$br, _List_Nil, _List_Nil),
 								function () {
@@ -7953,7 +7953,7 @@ var author$project$Main$viewHeader = function (model) {
 					]),
 				_List_fromArray(
 					[
-						elm$html$Html$text('Dī Penātēs Solar Crawler v0.2.5')
+						elm$html$Html$text('Dī Penātēs v0.4.0')
 					])),
 				A2(
 				elm$html$Html$select,
@@ -7969,77 +7969,77 @@ var author$project$Main$viewHeader = function (model) {
 						_List_Nil,
 						_List_fromArray(
 							[
-								elm$html$Html$text('Select Player')
+								elm$html$Html$text('Select Character')
 							])),
 						A2(
 						elm$html$Html$option,
 						_List_Nil,
 						_List_fromArray(
 							[
-								elm$html$Html$text('Captain Lola (Paladin)')
+								elm$html$Html$text('The Captain - Paladin')
 							])),
 						A2(
 						elm$html$Html$option,
 						_List_Nil,
 						_List_fromArray(
 							[
-								elm$html$Html$text('Dar (Bard)')
+								elm$html$Html$text('The First Mate - Bard')
 							])),
 						A2(
 						elm$html$Html$option,
 						_List_Nil,
 						_List_fromArray(
 							[
-								elm$html$Html$text('Ix (Fighter)')
+								elm$html$Html$text('The Security Officer - Fighter')
 							])),
 						A2(
 						elm$html$Html$option,
 						_List_Nil,
 						_List_fromArray(
 							[
-								elm$html$Html$text('Tommy the Cat (Thief)')
+								elm$html$Html$text('The Intelligence Officer - Thief')
 							])),
 						A2(
 						elm$html$Html$option,
 						_List_Nil,
 						_List_fromArray(
 							[
-								elm$html$Html$text('ZarrN (Ranger)')
+								elm$html$Html$text('The Navigation Officer - Ranger')
 							])),
 						A2(
 						elm$html$Html$option,
 						_List_Nil,
 						_List_fromArray(
 							[
-								elm$html$Html$text('Aero (Druid) ')
+								elm$html$Html$text('The Engineer - Druid')
 							])),
 						A2(
 						elm$html$Html$option,
 						_List_Nil,
 						_List_fromArray(
 							[
-								elm$html$Html$text('Mac (Wizard)')
+								elm$html$Html$text('The Pilot - Wizard')
 							])),
 						A2(
 						elm$html$Html$option,
 						_List_Nil,
 						_List_fromArray(
 							[
-								elm$html$Html$text('Drav (Cleric)')
+								elm$html$Html$text('The Biomechanic - Cleric')
 							])),
 						A2(
 						elm$html$Html$option,
 						_List_Nil,
 						_List_fromArray(
 							[
-								elm$html$Html$text('Dr Pachinka (Barbarian)')
+								elm$html$Html$text('The Scientist - Barbarian')
 							])),
 						A2(
 						elm$html$Html$option,
 						_List_Nil,
 						_List_fromArray(
 							[
-								elm$html$Html$text('GM')
+								elm$html$Html$text('The Director - GM')
 							]))
 					])),
 				A2(
@@ -8096,7 +8096,7 @@ var elm$browser$Browser$Document = F2(
 var author$project$Main$view = function (model) {
 	return A2(
 		elm$browser$Browser$Document,
-		'Solar Crawler',
+		'Dī Penātēs',
 		_List_fromArray(
 			[
 				A2(
