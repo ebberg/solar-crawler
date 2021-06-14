@@ -11,6 +11,7 @@ a science-fiction universe.
 Spaceport is a game designed to
 be printed on receipt paper. All
 game text is written to
-accomodate this limitation.
+accomodate this stylistic
+choice.
 
 More to come.
