@@ -1,0 +1,1757 @@
+var _ebberg$bergd$View$viewMenu = function (model) {
+	return A2(
+		_elm_lang$html$Html$div,
+		{
+			ctor: '::',
+			_0: _elm_lang$html$Html_Attributes$class('list-group'),
+			_1: {ctor: '[]'}
+		},
+		{
+			ctor: '::',
+			_0: A2(
+				_elm_lang$html$Html$button,
+				{
+					ctor: '::',
+					_0: _elm_lang$html$Html_Attributes$class(
+						A2(
+							_elm_lang$core$Basics_ops['++'],
+							'list-group-item list-group-item-action',
+							A2(_ebberg$bergd$Model$isActiveScreenType, model, _ebberg$bergd$Model$MakeMove))),
+					_1: {
+						ctor: '::',
+						_0: _elm_lang$html$Html_Events$onClick(
+							_ebberg$bergd$Update$ChangeScreenType(_ebberg$bergd$Model$MakeMove)),
+						_1: {ctor: '[]'}
+					}
+				},
+				{
+					ctor: '::',
+					_0: A2(
+						_elm_lang$html$Html$h5,
+						{ctor: '[]'},
+						{
+							ctor: '::',
+							_0: _elm_lang$html$Html$text('Perform Action'),
+							_1: {ctor: '[]'}
+						}),
+					_1: {ctor: '[]'}
+				}),
+			_1: {
+				ctor: '::',
+				_0: A2(
+					_elm_lang$html$Html$button,
+					{
+						ctor: '::',
+						_0: _elm_lang$html$Html_Attributes$class(
+							A2(
+								_elm_lang$core$Basics_ops['++'],
+								'list-group-item list-group-item-action',
+								A2(_ebberg$bergd$Model$isActiveScreenType, model, _ebberg$bergd$Model$CharacterSheet))),
+						_1: {
+							ctor: '::',
+							_0: _elm_lang$html$Html_Events$onClick(
+								_ebberg$bergd$Update$ChangeScreenType(_ebberg$bergd$Model$CharacterSheet)),
+							_1: {ctor: '[]'}
+						}
+					},
+					{
+						ctor: '::',
+						_0: A2(
+							_elm_lang$html$Html$h5,
+							{ctor: '[]'},
+							{
+								ctor: '::',
+								_0: _elm_lang$html$Html$text('Character Sheet'),
+								_1: {ctor: '[]'}
+							}),
+						_1: {ctor: '[]'}
+					}),
+				_1: {
+					ctor: '::',
+					_0: A2(
+						_elm_lang$html$Html$button,
+						{
+							ctor: '::',
+							_0: _elm_lang$html$Html_Attributes$class(
+								A2(
+									_elm_lang$core$Basics_ops['++'],
+									'list-group-item list-group-item-action',
+									A2(_ebberg$bergd$Model$isActiveScreenType, model, _ebberg$bergd$Model$ViewCharacters))),
+							_1: {
+								ctor: '::',
+								_0: _elm_lang$html$Html_Events$onClick(
+									_ebberg$bergd$Update$ChangeScreenType(_ebberg$bergd$Model$ViewCharacters)),
+								_1: {ctor: '[]'}
+							}
+						},
+						{
+							ctor: '::',
+							_0: A2(
+								_elm_lang$html$Html$h5,
+								{ctor: '[]'},
+								{
+									ctor: '::',
+									_0: _elm_lang$html$Html$text('View Characters'),
+									_1: {ctor: '[]'}
+								}),
+							_1: {ctor: '[]'}
+						}),
+					_1: {ctor: '[]'}
+				}
+			}
+		});
+};
+var _ebberg$bergd$View$getStatMod = F2(
+	function (character, rollType) {
+		var _p0 = rollType;
+		switch (_p0.ctor) {
+			case 'RollFour':
+				return _elm_lang$core$Maybe$Nothing;
+			case 'RollSix':
+				return _elm_lang$core$Maybe$Nothing;
+			case 'RollEight':
+				return _elm_lang$core$Maybe$Nothing;
+			case 'RollTen':
+				return _elm_lang$core$Maybe$Nothing;
+			case 'RollTwelve':
+				return _elm_lang$core$Maybe$Nothing;
+			case 'RollStr':
+				return _ebberg$bergd$Model$modFromStat(character.str);
+			case 'RollDex':
+				return _ebberg$bergd$Model$modFromStat(character.dex);
+			case 'RollInt':
+				return _ebberg$bergd$Model$modFromStat(character.$int);
+			case 'RollCon':
+				return _ebberg$bergd$Model$modFromStat(character.con);
+			case 'RollCha':
+				return _ebberg$bergd$Model$modFromStat(character.cha);
+			case 'RollWis':
+				return _ebberg$bergd$Model$modFromStat(character.wis);
+			default:
+				return _elm_lang$core$Maybe$Nothing;
+		}
+	});
+var _ebberg$bergd$View$rollAbilityDice = function (seed) {
+	var _p1 = A2(
+		_elm_lang$core$Random$step,
+		A2(_elm_lang$core$Random$int, 1, 6),
+		seed);
+	var newSeed = _p1._1;
+	var _p2 = A2(
+		_elm_lang$core$Random$step,
+		A2(_elm_lang$core$Random$int, 1, 6),
+		newSeed);
+	var resultOne = _p2._0;
+	var newSeedTwo = _p2._1;
+	var _p3 = A2(
+		_elm_lang$core$Random$step,
+		A2(_elm_lang$core$Random$int, 1, 6),
+		newSeedTwo);
+	var resultTwo = _p3._0;
+	return {ctor: '_Tuple2', _0: resultOne, _1: resultTwo};
+};
+var _ebberg$bergd$View$rollResult = F2(
+	function (model, rollType) {
+		var _p4 = _ebberg$bergd$View$rollAbilityDice(model.seed);
+		var rollOne = _p4._0;
+		var rollTwo = _p4._1;
+		var maybeCharacter = _ebberg$bergd$Model$maybeGetCharacter(model.characterType);
+		var maybeStatMod = function () {
+			var _p5 = maybeCharacter;
+			if (_p5.ctor === 'Just') {
+				var _p7 = _p5._0;
+				var _p6 = rollType;
+				if (_p6.ctor === 'RollReason') {
+					return A2(_ebberg$bergd$View$getStatMod, _p7, _p6._1);
+				} else {
+					return A2(_ebberg$bergd$View$getStatMod, _p7, rollType);
+				}
+			} else {
+				return _elm_lang$core$Maybe$Nothing;
+			}
+		}();
+		return A2(
+			_elm_lang$core$Basics_ops['++'],
+			function () {
+				var _p8 = maybeStatMod;
+				if (_p8.ctor === 'Nothing') {
+					return _elm_lang$core$Basics$toString(rollOne + rollTwo);
+				} else {
+					return _elm_lang$core$Basics$toString((rollOne + rollTwo) + _p8._0);
+				}
+			}(),
+			A2(
+				_elm_lang$core$Basics_ops['++'],
+				' = ',
+				A2(
+					_elm_lang$core$Basics_ops['++'],
+					_elm_lang$core$Basics$toString(rollOne),
+					A2(
+						_elm_lang$core$Basics_ops['++'],
+						'+',
+						A2(
+							_elm_lang$core$Basics_ops['++'],
+							_elm_lang$core$Basics$toString(rollTwo),
+							A2(
+								_elm_lang$core$Basics_ops['++'],
+								'+',
+								function () {
+									var _p9 = maybeStatMod;
+									if (_p9.ctor === 'Nothing') {
+										return '0';
+									} else {
+										return _elm_lang$core$Basics$toString(_p9._0);
+									}
+								}()))))));
+	});
+var _ebberg$bergd$View$viewCharacterName = function (model) {
+	return A2(
+		_elm_lang$html$Html$div,
+		{ctor: '[]'},
+		{
+			ctor: '::',
+			_0: function () {
+				var _p10 = model.characterType;
+				switch (_p10.ctor) {
+					case 'SelectCharacter':
+						return A2(
+							_elm_lang$html$Html$h1,
+							{ctor: '[]'},
+							{
+								ctor: '::',
+								_0: _elm_lang$html$Html$text('Select Player (above)'),
+								_1: {ctor: '[]'}
+							});
+					case 'CharacterTypeError':
+						return A2(
+							_elm_lang$html$Html$h1,
+							{ctor: '[]'},
+							{
+								ctor: '::',
+								_0: _elm_lang$html$Html$text('Error selecting player'),
+								_1: {ctor: '[]'}
+							});
+					case 'TheDirector':
+						return A2(
+							_elm_lang$html$Html$h1,
+							{ctor: '[]'},
+							{
+								ctor: '::',
+								_0: _elm_lang$html$Html$text('The Director'),
+								_1: {ctor: '[]'}
+							});
+					default:
+						return A2(
+							_elm_lang$html$Html$h1,
+							{ctor: '[]'},
+							A2(
+								_elm_lang$core$List$map,
+								function ($char) {
+									return _elm_lang$core$Native_Utils.eq($char.type_, model.characterType) ? _elm_lang$html$Html$text($char.name) : _elm_lang$html$Html$text('');
+								},
+								_ebberg$bergd$Model$characters));
+				}
+			}(),
+			_1: {ctor: '[]'}
+		});
+};
+var _ebberg$bergd$View$viewStatMod = F3(
+	function (model, maybeCharacter, statName) {
+		var stat = function () {
+			var _p11 = maybeCharacter;
+			if (_p11.ctor === 'Just') {
+				return A3(_ebberg$bergd$Model$addLevelMods, model, _p11._0, statName);
+			} else {
+				return 9000;
+			}
+		}();
+		return _elm_lang$html$Html$text(
+			A2(
+				_elm_lang$core$Basics_ops['++'],
+				'(',
+				A2(
+					_elm_lang$core$Basics_ops['++'],
+					function () {
+						var _p12 = _ebberg$bergd$Model$modFromStat(stat);
+						if (_p12.ctor === 'Nothing') {
+							return 'error out of 1-18 bounds';
+						} else {
+							var _p14 = _p12._0;
+							var _p13 = _elm_lang$core$Native_Utils.cmp(_p14, 0) > 0;
+							if (_p13 === true) {
+								return A2(
+									_elm_lang$core$Basics_ops['++'],
+									'+',
+									_elm_lang$core$Basics$toString(_p14));
+							} else {
+								return _elm_lang$core$Basics$toString(_p14);
+							}
+						}
+					}(),
+					')')));
+	});
+var _ebberg$bergd$View$viewRoll = F2(
+	function (model, roll) {
+		var maybeCharacter = _ebberg$bergd$Model$maybeGetCharacter(model.characterType);
+		var _p15 = roll;
+		switch (_p15.ctor) {
+			case 'RollFour':
+				return _elm_lang$html$Html$text('Roll d4');
+			case 'RollSix':
+				return _elm_lang$html$Html$text('Roll d6');
+			case 'RollEight':
+				return _elm_lang$html$Html$text('Roll d8');
+			case 'RollTen':
+				return _elm_lang$html$Html$text('Roll d10');
+			case 'RollTwelve':
+				return _elm_lang$html$Html$text('Roll d12');
+			case 'RollStr':
+				return A2(
+					_elm_lang$html$Html$div,
+					{ctor: '[]'},
+					{
+						ctor: '::',
+						_0: _elm_lang$html$Html$text('Roll STR'),
+						_1: {
+							ctor: '::',
+							_0: _elm_lang$html$Html$text(' '),
+							_1: {
+								ctor: '::',
+								_0: A3(_ebberg$bergd$View$viewStatMod, model, maybeCharacter, 'str'),
+								_1: {ctor: '[]'}
+							}
+						}
+					});
+			case 'RollCon':
+				return A2(
+					_elm_lang$html$Html$div,
+					{ctor: '[]'},
+					{
+						ctor: '::',
+						_0: _elm_lang$html$Html$text('Roll CON'),
+						_1: {
+							ctor: '::',
+							_0: _elm_lang$html$Html$text(' '),
+							_1: {
+								ctor: '::',
+								_0: A3(_ebberg$bergd$View$viewStatMod, model, maybeCharacter, 'con'),
+								_1: {ctor: '[]'}
+							}
+						}
+					});
+			case 'RollDex':
+				return A2(
+					_elm_lang$html$Html$div,
+					{ctor: '[]'},
+					{
+						ctor: '::',
+						_0: _elm_lang$html$Html$text('Roll DEX'),
+						_1: {
+							ctor: '::',
+							_0: _elm_lang$html$Html$text(' '),
+							_1: {
+								ctor: '::',
+								_0: A3(_ebberg$bergd$View$viewStatMod, model, maybeCharacter, 'dex'),
+								_1: {ctor: '[]'}
+							}
+						}
+					});
+			case 'RollInt':
+				return A2(
+					_elm_lang$html$Html$div,
+					{ctor: '[]'},
+					{
+						ctor: '::',
+						_0: _elm_lang$html$Html$text('Roll INT'),
+						_1: {
+							ctor: '::',
+							_0: _elm_lang$html$Html$text(' '),
+							_1: {
+								ctor: '::',
+								_0: A3(_ebberg$bergd$View$viewStatMod, model, maybeCharacter, 'int'),
+								_1: {ctor: '[]'}
+							}
+						}
+					});
+			case 'RollWis':
+				return A2(
+					_elm_lang$html$Html$div,
+					{ctor: '[]'},
+					{
+						ctor: '::',
+						_0: _elm_lang$html$Html$text('Roll WIS'),
+						_1: {
+							ctor: '::',
+							_0: _elm_lang$html$Html$text(' '),
+							_1: {
+								ctor: '::',
+								_0: A3(_ebberg$bergd$View$viewStatMod, model, maybeCharacter, 'wis'),
+								_1: {ctor: '[]'}
+							}
+						}
+					});
+			case 'RollCha':
+				return A2(
+					_elm_lang$html$Html$div,
+					{ctor: '[]'},
+					{
+						ctor: '::',
+						_0: _elm_lang$html$Html$text('Roll CHA'),
+						_1: {
+							ctor: '::',
+							_0: _elm_lang$html$Html$text(' '),
+							_1: {
+								ctor: '::',
+								_0: A3(_ebberg$bergd$View$viewStatMod, model, maybeCharacter, 'cha'),
+								_1: {ctor: '[]'}
+							}
+						}
+					});
+			default:
+				return _elm_lang$html$Html$text('Not implemented');
+		}
+	});
+var _ebberg$bergd$View$viewRollType = F2(
+	function (model, rollType) {
+		return A2(
+			_elm_lang$html$Html$button,
+			{
+				ctor: '::',
+				_0: _elm_lang$html$Html_Attributes$class('list-group-item list-group-item-action'),
+				_1: {
+					ctor: '::',
+					_0: _elm_lang$html$Html_Events$onClick(
+						_ebberg$bergd$Update$Roll(rollType)),
+					_1: {ctor: '[]'}
+				}
+			},
+			{
+				ctor: '::',
+				_0: function () {
+					var _p16 = rollType;
+					if (_p16.ctor === 'RollReason') {
+						return A2(
+							_elm_lang$html$Html$div,
+							{ctor: '[]'},
+							{
+								ctor: '::',
+								_0: A2(
+									_elm_lang$html$Html$i,
+									{ctor: '[]'},
+									{
+										ctor: '::',
+										_0: _elm_lang$html$Html$text(_p16._0),
+										_1: {ctor: '[]'}
+									}),
+								_1: {
+									ctor: '::',
+									_0: A2(_ebberg$bergd$View$viewRoll, model, _p16._1),
+									_1: {ctor: '[]'}
+								}
+							});
+					} else {
+						return A2(_ebberg$bergd$View$viewRoll, model, _p16);
+					}
+				}(),
+				_1: {ctor: '[]'}
+			});
+	});
+var _ebberg$bergd$View$viewMoveControls = F3(
+	function (model, moveSet, move) {
+		var _p17 = move.roll;
+		if (_p17.ctor === '[]') {
+			return A2(
+				_elm_lang$html$Html$div,
+				{ctor: '[]'},
+				{ctor: '[]'});
+		} else {
+			if (_p17._1.ctor === '[]') {
+				return A2(
+					_elm_lang$html$Html$div,
+					{ctor: '[]'},
+					{
+						ctor: '::',
+						_0: A2(
+							_elm_lang$html$Html$p,
+							{ctor: '[]'},
+							{
+								ctor: '::',
+								_0: _elm_lang$html$Html$text(model.roll),
+								_1: {ctor: '[]'}
+							}),
+						_1: {
+							ctor: '::',
+							_0: A2(_ebberg$bergd$View$viewRollType, model, _p17._0),
+							_1: {ctor: '[]'}
+						}
+					});
+			} else {
+				return A2(
+					_elm_lang$html$Html$div,
+					{ctor: '[]'},
+					A2(
+						_elm_lang$core$Basics_ops['++'],
+						{
+							ctor: '::',
+							_0: A2(
+								_elm_lang$html$Html$p,
+								{ctor: '[]'},
+								{
+									ctor: '::',
+									_0: _elm_lang$html$Html$text(model.roll),
+									_1: {ctor: '[]'}
+								}),
+							_1: {ctor: '[]'}
+						},
+						A2(
+							_elm_lang$core$List$map,
+							_ebberg$bergd$View$viewRollType(model),
+							_p17)));
+			}
+		}
+	});
+var _ebberg$bergd$View$viewMove = F3(
+	function (model, moveSet, move) {
+		return A2(
+			_elm_lang$html$Html$div,
+			{
+				ctor: '::',
+				_0: _elm_lang$html$Html_Attributes$class('card'),
+				_1: {
+					ctor: '::',
+					_0: _elm_lang$html$Html_Attributes$id(
+						A2(
+							_elm_lang$core$Basics_ops['++'],
+							_ebberg$bergd$Model$moveTypeToString(move.type_),
+							'Overarching')),
+					_1: {ctor: '[]'}
+				}
+			},
+			{
+				ctor: '::',
+				_0: A2(
+					_elm_lang$html$Html$div,
+					{
+						ctor: '::',
+						_0: _elm_lang$html$Html_Attributes$id(
+							A2(
+								_elm_lang$core$Basics_ops['++'],
+								'heading',
+								_ebberg$bergd$Model$moveTypeToString(move.type_))),
+						_1: {ctor: '[]'}
+					},
+					{
+						ctor: '::',
+						_0: A2(
+							_elm_lang$html$Html$div,
+							{
+								ctor: '::',
+								_0: _elm_lang$html$Html_Attributes$class('list-group list-group-flush'),
+								_1: {ctor: '[]'}
+							},
+							{
+								ctor: '::',
+								_0: A2(
+									_elm_lang$html$Html$h5,
+									{ctor: '[]'},
+									{
+										ctor: '::',
+										_0: A2(
+											_elm_lang$html$Html$button,
+											{
+												ctor: '::',
+												_0: _elm_lang$html$Html_Attributes$class('list-group-item list-group-item-action collapsed'),
+												_1: {
+													ctor: '::',
+													_0: _elm_lang$html$Html_Attributes$type_('button'),
+													_1: {
+														ctor: '::',
+														_0: A2(_elm_lang$html$Html_Attributes$attribute, 'data-toggle', 'collapse'),
+														_1: {
+															ctor: '::',
+															_0: A2(
+																_elm_lang$html$Html_Attributes$attribute,
+																'data-target',
+																A2(
+																	_elm_lang$core$Basics_ops['++'],
+																	'#',
+																	A2(
+																		_elm_lang$core$Basics_ops['++'],
+																		'collapse',
+																		_ebberg$bergd$Model$moveTypeToString(move.type_)))),
+															_1: {
+																ctor: '::',
+																_0: A2(_elm_lang$html$Html_Attributes$attribute, 'aria-expanded', 'false'),
+																_1: {
+																	ctor: '::',
+																	_0: A2(
+																		_elm_lang$html$Html_Attributes$attribute,
+																		'aria-controls',
+																		A2(
+																			_elm_lang$core$Basics_ops['++'],
+																			'collapse',
+																			_ebberg$bergd$Model$moveTypeToString(move.type_))),
+																	_1: {
+																		ctor: '::',
+																		_0: _elm_lang$html$Html_Events$onClick(_ebberg$bergd$Update$ResetRoll),
+																		_1: {ctor: '[]'}
+																	}
+																}
+															}
+														}
+													}
+												}
+											},
+											{
+												ctor: '::',
+												_0: _elm_lang$html$Html$text(move.title),
+												_1: {ctor: '[]'}
+											}),
+										_1: {ctor: '[]'}
+									}),
+								_1: {ctor: '[]'}
+							}),
+						_1: {ctor: '[]'}
+					}),
+				_1: {
+					ctor: '::',
+					_0: A2(
+						_elm_lang$html$Html$div,
+						{
+							ctor: '::',
+							_0: _elm_lang$html$Html_Attributes$class('collapse'),
+							_1: {
+								ctor: '::',
+								_0: _elm_lang$html$Html_Attributes$id(
+									A2(
+										_elm_lang$core$Basics_ops['++'],
+										'collapse',
+										_ebberg$bergd$Model$moveTypeToString(move.type_))),
+								_1: {
+									ctor: '::',
+									_0: A2(_elm_lang$html$Html_Attributes$attribute, 'role', 'dialog'),
+									_1: {
+										ctor: '::',
+										_0: A2(
+											_elm_lang$html$Html_Attributes$attribute,
+											'aria-labelledby',
+											A2(
+												_elm_lang$core$Basics_ops['++'],
+												'heading',
+												_ebberg$bergd$Model$moveTypeToString(move.type_))),
+										_1: {
+											ctor: '::',
+											_0: A2(
+												_elm_lang$html$Html_Attributes$attribute,
+												'data-parent',
+												A2(_elm_lang$core$Basics_ops['++'], '#accordion', moveSet.id)),
+											_1: {ctor: '[]'}
+										}
+									}
+								}
+							}
+						},
+						{
+							ctor: '::',
+							_0: A2(
+								_elm_lang$html$Html$div,
+								{
+									ctor: '::',
+									_0: _elm_lang$html$Html_Attributes$class('card-body'),
+									_1: {ctor: '[]'}
+								},
+								{
+									ctor: '::',
+									_0: A2(
+										_evancz$elm_markdown$Markdown$toHtml,
+										{ctor: '[]'},
+										move.desc),
+									_1: {
+										ctor: '::',
+										_0: A3(_ebberg$bergd$View$viewMoveControls, model, moveSet, move),
+										_1: {ctor: '[]'}
+									}
+								}),
+							_1: {ctor: '[]'}
+						}),
+					_1: {ctor: '[]'}
+				}
+			});
+	});
+var _ebberg$bergd$View$viewMoveSet = F2(
+	function (model, moveSet) {
+		var moves = A2(
+			_elm_lang$core$List$filter,
+			function (m) {
+				return _elm_lang$core$Native_Utils.cmp(model.level, m.level) > -1;
+			},
+			moveSet.moves);
+		return (!_elm_lang$core$Native_Utils.eq(
+			moves,
+			{ctor: '[]'})) ? A2(
+			_elm_lang$html$Html$div,
+			{ctor: '[]'},
+			{
+				ctor: '::',
+				_0: A2(
+					_elm_lang$html$Html$h4,
+					{ctor: '[]'},
+					{
+						ctor: '::',
+						_0: _elm_lang$html$Html$text(moveSet.title),
+						_1: {ctor: '[]'}
+					}),
+				_1: {
+					ctor: '::',
+					_0: A2(
+						_elm_lang$html$Html$div,
+						{
+							ctor: '::',
+							_0: _elm_lang$html$Html_Attributes$class('accordion'),
+							_1: {
+								ctor: '::',
+								_0: _elm_lang$html$Html_Attributes$id(
+									A2(_elm_lang$core$Basics_ops['++'], 'accordion', moveSet.id)),
+								_1: {ctor: '[]'}
+							}
+						},
+						A2(
+							_elm_lang$core$List$map,
+							A2(_ebberg$bergd$View$viewMove, model, moveSet),
+							moves)),
+					_1: {
+						ctor: '::',
+						_0: A2(
+							_elm_lang$html$Html$br,
+							{ctor: '[]'},
+							{ctor: '[]'}),
+						_1: {ctor: '[]'}
+					}
+				}
+			}) : A2(
+			_elm_lang$html$Html$div,
+			{ctor: '[]'},
+			{ctor: '[]'});
+	});
+var _ebberg$bergd$View$viewMoves = function (model) {
+	return A2(
+		_elm_lang$html$Html$div,
+		{ctor: '[]'},
+		A2(
+			_elm_lang$core$List$map,
+			function ($char) {
+				return _elm_lang$core$Native_Utils.eq($char.type_, model.characterType) ? A2(
+					_elm_lang$html$Html$div,
+					{ctor: '[]'},
+					A2(
+						_elm_lang$core$List$map,
+						_ebberg$bergd$View$viewMoveSet(model),
+						$char.moves)) : _elm_lang$html$Html$text('');
+			},
+			_ebberg$bergd$Model$characters));
+};
+var _ebberg$bergd$View$viewMakeMove = function (model) {
+	return A2(
+		_elm_lang$html$Html$div,
+		{ctor: '[]'},
+		{
+			ctor: '::',
+			_0: function () {
+				var _p18 = model.characterType;
+				switch (_p18.ctor) {
+					case 'SelectCharacter':
+						return _elm_lang$html$Html$text('Select Player (above)');
+					case 'CharacterTypeError':
+						return _elm_lang$html$Html$text('Error selecting player');
+					case 'TheDirector':
+						return A2(
+							_elm_lang$html$Html$div,
+							{ctor: '[]'},
+							A2(
+								_elm_lang$core$List$map,
+								_ebberg$bergd$View$viewMoveSet(model),
+								_ebberg$bergd$Model$theDirectorMoves));
+					default:
+						return _ebberg$bergd$View$viewMoves(model);
+				}
+			}(),
+			_1: {ctor: '[]'}
+		});
+};
+var _ebberg$bergd$View$viewStat = F3(
+	function (model, character, statName) {
+		var stat = A3(_ebberg$bergd$Model$addLevelMods, model, character, statName);
+		return _elm_lang$html$Html$text(
+			A2(
+				_elm_lang$core$Basics_ops['++'],
+				_elm_lang$core$Basics$toString(stat),
+				A2(
+					_elm_lang$core$Basics_ops['++'],
+					' (',
+					A2(
+						_elm_lang$core$Basics_ops['++'],
+						function () {
+							var _p19 = _ebberg$bergd$Model$modFromStat(stat);
+							if (_p19.ctor === 'Nothing') {
+								return 'error out of 1-18 bounds';
+							} else {
+								var _p21 = _p19._0;
+								var _p20 = _elm_lang$core$Native_Utils.cmp(_p21, 0) > 0;
+								if (_p20 === true) {
+									return A2(
+										_elm_lang$core$Basics_ops['++'],
+										'+',
+										_elm_lang$core$Basics$toString(_p21));
+								} else {
+									return _elm_lang$core$Basics$toString(_p21);
+								}
+							}
+						}(),
+						')'))));
+	});
+var _ebberg$bergd$View$viewCharacter = F2(
+	function (model, character) {
+		return A2(
+			_elm_lang$html$Html$li,
+			{
+				ctor: '::',
+				_0: _elm_lang$html$Html_Attributes$class('list-group-item'),
+				_1: {ctor: '[]'}
+			},
+			{
+				ctor: '::',
+				_0: A2(
+					_elm_lang$html$Html$h5,
+					{ctor: '[]'},
+					{
+						ctor: '::',
+						_0: _elm_lang$html$Html$text(character.name),
+						_1: {ctor: '[]'}
+					}),
+				_1: {
+					ctor: '::',
+					_0: A2(
+						_elm_lang$html$Html$p,
+						{ctor: '[]'},
+						{
+							ctor: '::',
+							_0: A2(
+								_elm_lang$html$Html$b,
+								{ctor: '[]'},
+								{
+									ctor: '::',
+									_0: _elm_lang$html$Html$text('HP: '),
+									_1: {ctor: '[]'}
+								}),
+							_1: {
+								ctor: '::',
+								_0: _elm_lang$html$Html$text(
+									_elm_lang$core$Basics$toString(
+										A2(_ebberg$bergd$Model$hp, model, character))),
+								_1: {ctor: '[]'}
+							}
+						}),
+					_1: {
+						ctor: '::',
+						_0: A2(
+							_elm_lang$html$Html$ul,
+							{
+								ctor: '::',
+								_0: _elm_lang$html$Html_Attributes$class('list-unstyled'),
+								_1: {ctor: '[]'}
+							},
+							{
+								ctor: '::',
+								_0: A2(
+									_elm_lang$html$Html$li,
+									{ctor: '[]'},
+									{
+										ctor: '::',
+										_0: A2(
+											_elm_lang$html$Html$b,
+											{ctor: '[]'},
+											{
+												ctor: '::',
+												_0: _elm_lang$html$Html$text('Str: '),
+												_1: {ctor: '[]'}
+											}),
+										_1: {
+											ctor: '::',
+											_0: A3(_ebberg$bergd$View$viewStat, model, character, 'str'),
+											_1: {ctor: '[]'}
+										}
+									}),
+								_1: {
+									ctor: '::',
+									_0: A2(
+										_elm_lang$html$Html$li,
+										{ctor: '[]'},
+										{
+											ctor: '::',
+											_0: A2(
+												_elm_lang$html$Html$b,
+												{ctor: '[]'},
+												{
+													ctor: '::',
+													_0: _elm_lang$html$Html$text('Dex: '),
+													_1: {ctor: '[]'}
+												}),
+											_1: {
+												ctor: '::',
+												_0: A3(_ebberg$bergd$View$viewStat, model, character, 'dex'),
+												_1: {ctor: '[]'}
+											}
+										}),
+									_1: {
+										ctor: '::',
+										_0: A2(
+											_elm_lang$html$Html$li,
+											{ctor: '[]'},
+											{
+												ctor: '::',
+												_0: A2(
+													_elm_lang$html$Html$b,
+													{ctor: '[]'},
+													{
+														ctor: '::',
+														_0: _elm_lang$html$Html$text('Con: '),
+														_1: {ctor: '[]'}
+													}),
+												_1: {
+													ctor: '::',
+													_0: A3(_ebberg$bergd$View$viewStat, model, character, 'con'),
+													_1: {ctor: '[]'}
+												}
+											}),
+										_1: {
+											ctor: '::',
+											_0: A2(
+												_elm_lang$html$Html$li,
+												{ctor: '[]'},
+												{
+													ctor: '::',
+													_0: A2(
+														_elm_lang$html$Html$b,
+														{ctor: '[]'},
+														{
+															ctor: '::',
+															_0: _elm_lang$html$Html$text('Int: '),
+															_1: {ctor: '[]'}
+														}),
+													_1: {
+														ctor: '::',
+														_0: A3(_ebberg$bergd$View$viewStat, model, character, 'int'),
+														_1: {ctor: '[]'}
+													}
+												}),
+											_1: {
+												ctor: '::',
+												_0: A2(
+													_elm_lang$html$Html$li,
+													{ctor: '[]'},
+													{
+														ctor: '::',
+														_0: A2(
+															_elm_lang$html$Html$b,
+															{ctor: '[]'},
+															{
+																ctor: '::',
+																_0: _elm_lang$html$Html$text('Wis: '),
+																_1: {ctor: '[]'}
+															}),
+														_1: {
+															ctor: '::',
+															_0: A3(_ebberg$bergd$View$viewStat, model, character, 'wis'),
+															_1: {ctor: '[]'}
+														}
+													}),
+												_1: {
+													ctor: '::',
+													_0: A2(
+														_elm_lang$html$Html$li,
+														{ctor: '[]'},
+														{
+															ctor: '::',
+															_0: A2(
+																_elm_lang$html$Html$b,
+																{ctor: '[]'},
+																{
+																	ctor: '::',
+																	_0: _elm_lang$html$Html$text('Cha: '),
+																	_1: {ctor: '[]'}
+																}),
+															_1: {
+																ctor: '::',
+																_0: A3(_ebberg$bergd$View$viewStat, model, character, 'cha'),
+																_1: {ctor: '[]'}
+															}
+														}),
+													_1: {ctor: '[]'}
+												}
+											}
+										}
+									}
+								}
+							}),
+						_1: {
+							ctor: '::',
+							_0: A2(
+								_elm_lang$html$Html$small,
+								{ctor: '[]'},
+								{
+									ctor: '::',
+									_0: _elm_lang$html$Html$text(
+										A2(_elm_lang$core$Basics_ops['++'], 'Based on ', character.origin)),
+									_1: {ctor: '[]'}
+								}),
+							_1: {ctor: '[]'}
+						}
+					}
+				}
+			});
+	});
+var _ebberg$bergd$View$viewCharacters = function (model) {
+	return A2(
+		_elm_lang$html$Html$div,
+		{ctor: '[]'},
+		{
+			ctor: '::',
+			_0: A2(
+				_elm_lang$html$Html$ul,
+				{
+					ctor: '::',
+					_0: _elm_lang$html$Html_Attributes$class('list-group'),
+					_1: {ctor: '[]'}
+				},
+				A2(
+					_elm_lang$core$List$map,
+					function (x) {
+						return A2(_ebberg$bergd$View$viewCharacter, model, x);
+					},
+					_ebberg$bergd$Model$characters)),
+			_1: {ctor: '[]'}
+		});
+};
+var _ebberg$bergd$View$viewCharacterSheet = function (model) {
+	return A2(
+		_elm_lang$html$Html$div,
+		{ctor: '[]'},
+		{
+			ctor: '::',
+			_0: function () {
+				var _p22 = model.characterType;
+				switch (_p22.ctor) {
+					case 'SelectCharacter':
+						return A2(
+							_elm_lang$html$Html$p,
+							{ctor: '[]'},
+							{
+								ctor: '::',
+								_0: _elm_lang$html$Html$text('Select Player (above)'),
+								_1: {ctor: '[]'}
+							});
+					case 'CharacterTypeError':
+						return A2(
+							_elm_lang$html$Html$p,
+							{ctor: '[]'},
+							{
+								ctor: '::',
+								_0: _elm_lang$html$Html$text('Error selecting player'),
+								_1: {ctor: '[]'}
+							});
+					case 'TheDirector':
+						return A2(
+							_evancz$elm_markdown$Markdown$toHtml,
+							{ctor: '[]'},
+							_ebberg$bergd$Content$contentFronts);
+					default:
+						var maybeCharacter = _ebberg$bergd$Model$maybeGetCharacter(_p22);
+						var _p23 = maybeCharacter;
+						if (_p23.ctor === 'Nothing') {
+							return A2(
+								_elm_lang$html$Html$p,
+								{ctor: '[]'},
+								{
+									ctor: '::',
+									_0: _elm_lang$html$Html$text('Error character not in characters list'),
+									_1: {ctor: '[]'}
+								});
+						} else {
+							var _p25 = _p23._0;
+							return A2(
+								_elm_lang$html$Html$div,
+								{ctor: '[]'},
+								{
+									ctor: '::',
+									_0: A2(
+										_elm_lang$html$Html$p,
+										{ctor: '[]'},
+										{
+											ctor: '::',
+											_0: _elm_lang$html$Html$text(_p25.name),
+											_1: {ctor: '[]'}
+										}),
+									_1: {
+										ctor: '::',
+										_0: A2(
+											_elm_lang$html$Html$p,
+											{ctor: '[]'},
+											{
+												ctor: '::',
+												_0: A2(
+													_elm_lang$html$Html$b,
+													{ctor: '[]'},
+													{
+														ctor: '::',
+														_0: _elm_lang$html$Html$text('HP: '),
+														_1: {ctor: '[]'}
+													}),
+												_1: {
+													ctor: '::',
+													_0: _elm_lang$html$Html$text(
+														_elm_lang$core$Basics$toString(
+															A2(_ebberg$bergd$Model$hp, model, _p25))),
+													_1: {ctor: '[]'}
+												}
+											}),
+										_1: {
+											ctor: '::',
+											_0: A2(
+												_elm_lang$html$Html$ul,
+												{
+													ctor: '::',
+													_0: _elm_lang$html$Html_Attributes$class('list-unstyled'),
+													_1: {ctor: '[]'}
+												},
+												{
+													ctor: '::',
+													_0: A2(
+														_elm_lang$html$Html$li,
+														{ctor: '[]'},
+														{
+															ctor: '::',
+															_0: A2(
+																_elm_lang$html$Html$b,
+																{ctor: '[]'},
+																{
+																	ctor: '::',
+																	_0: _elm_lang$html$Html$text('Str: '),
+																	_1: {ctor: '[]'}
+																}),
+															_1: {
+																ctor: '::',
+																_0: A3(_ebberg$bergd$View$viewStat, model, _p25, 'str'),
+																_1: {ctor: '[]'}
+															}
+														}),
+													_1: {
+														ctor: '::',
+														_0: A2(
+															_elm_lang$html$Html$li,
+															{ctor: '[]'},
+															{
+																ctor: '::',
+																_0: A2(
+																	_elm_lang$html$Html$b,
+																	{ctor: '[]'},
+																	{
+																		ctor: '::',
+																		_0: _elm_lang$html$Html$text('Dex: '),
+																		_1: {ctor: '[]'}
+																	}),
+																_1: {
+																	ctor: '::',
+																	_0: A3(_ebberg$bergd$View$viewStat, model, _p25, 'dex'),
+																	_1: {ctor: '[]'}
+																}
+															}),
+														_1: {
+															ctor: '::',
+															_0: A2(
+																_elm_lang$html$Html$li,
+																{ctor: '[]'},
+																{
+																	ctor: '::',
+																	_0: A2(
+																		_elm_lang$html$Html$b,
+																		{ctor: '[]'},
+																		{
+																			ctor: '::',
+																			_0: _elm_lang$html$Html$text('Con: '),
+																			_1: {ctor: '[]'}
+																		}),
+																	_1: {
+																		ctor: '::',
+																		_0: A3(_ebberg$bergd$View$viewStat, model, _p25, 'con'),
+																		_1: {ctor: '[]'}
+																	}
+																}),
+															_1: {
+																ctor: '::',
+																_0: A2(
+																	_elm_lang$html$Html$li,
+																	{ctor: '[]'},
+																	{
+																		ctor: '::',
+																		_0: A2(
+																			_elm_lang$html$Html$b,
+																			{ctor: '[]'},
+																			{
+																				ctor: '::',
+																				_0: _elm_lang$html$Html$text('Int: '),
+																				_1: {ctor: '[]'}
+																			}),
+																		_1: {
+																			ctor: '::',
+																			_0: A3(_ebberg$bergd$View$viewStat, model, _p25, 'int'),
+																			_1: {ctor: '[]'}
+																		}
+																	}),
+																_1: {
+																	ctor: '::',
+																	_0: A2(
+																		_elm_lang$html$Html$li,
+																		{ctor: '[]'},
+																		{
+																			ctor: '::',
+																			_0: A2(
+																				_elm_lang$html$Html$b,
+																				{ctor: '[]'},
+																				{
+																					ctor: '::',
+																					_0: _elm_lang$html$Html$text('Wis: '),
+																					_1: {ctor: '[]'}
+																				}),
+																			_1: {
+																				ctor: '::',
+																				_0: A3(_ebberg$bergd$View$viewStat, model, _p25, 'wis'),
+																				_1: {ctor: '[]'}
+																			}
+																		}),
+																	_1: {
+																		ctor: '::',
+																		_0: A2(
+																			_elm_lang$html$Html$li,
+																			{ctor: '[]'},
+																			{
+																				ctor: '::',
+																				_0: A2(
+																					_elm_lang$html$Html$b,
+																					{ctor: '[]'},
+																					{
+																						ctor: '::',
+																						_0: _elm_lang$html$Html$text('Cha: '),
+																						_1: {ctor: '[]'}
+																					}),
+																				_1: {
+																					ctor: '::',
+																					_0: A3(_ebberg$bergd$View$viewStat, model, _p25, 'cha'),
+																					_1: {ctor: '[]'}
+																				}
+																			}),
+																		_1: {ctor: '[]'}
+																	}
+																}
+															}
+														}
+													}
+												}),
+											_1: {
+												ctor: '::',
+												_0: A2(
+													_evancz$elm_markdown$Markdown$toHtml,
+													{ctor: '[]'},
+													_p25.desc),
+												_1: {
+													ctor: '::',
+													_0: function () {
+														var _p24 = model.level;
+														switch (_p24) {
+															case 3:
+																return A2(
+																	_evancz$elm_markdown$Markdown$toHtml,
+																	{ctor: '[]'},
+																	_p25.twist);
+															case 5:
+																return A2(
+																	_evancz$elm_markdown$Markdown$toHtml,
+																	{ctor: '[]'},
+																	_p25.finale);
+															default:
+																return _elm_lang$html$Html$text('');
+														}
+													}(),
+													_1: {ctor: '[]'}
+												}
+											}
+										}
+									}
+								});
+						}
+				}
+			}(),
+			_1: {ctor: '[]'}
+		});
+};
+var _ebberg$bergd$View$viewInventory = function (model) {
+	return A2(
+		_elm_lang$html$Html$div,
+		{ctor: '[]'},
+		{
+			ctor: '::',
+			_0: _elm_lang$html$Html$text('TODO'),
+			_1: {ctor: '[]'}
+		});
+};
+var _ebberg$bergd$View$viewPrep = function (model) {
+	return A2(
+		_elm_lang$html$Html$div,
+		{ctor: '[]'},
+		{
+			ctor: '::',
+			_0: A2(
+				_evancz$elm_markdown$Markdown$toHtml,
+				{ctor: '[]'},
+				_ebberg$bergd$Content$contentPrepHidden),
+			_1: {ctor: '[]'}
+		});
+};
+var _ebberg$bergd$View$viewCharacterChoices = function (model) {
+	return A2(
+		_elm_lang$html$Html$div,
+		{ctor: '[]'},
+		{
+			ctor: '::',
+			_0: _elm_lang$html$Html$text('TODO'),
+			_1: {ctor: '[]'}
+		});
+};
+var _ebberg$bergd$View$viewTwoButtons = F4(
+	function (button1, onClickButton1, button2, onClickButton2) {
+		return A2(
+			_elm_lang$html$Html$div,
+			{ctor: '[]'},
+			{ctor: '[]'});
+	});
+var _ebberg$bergd$View$viewContent = function (model) {
+	return A2(
+		_elm_lang$html$Html$div,
+		{ctor: '[]'},
+		{
+			ctor: '::',
+			_0: _ebberg$bergd$View$viewCharacterName(model),
+			_1: {
+				ctor: '::',
+				_0: A2(
+					_elm_lang$html$Html$div,
+					{
+						ctor: '::',
+						_0: _elm_lang$html$Html_Attributes$class('row'),
+						_1: {ctor: '[]'}
+					},
+					{
+						ctor: '::',
+						_0: A2(
+							_elm_lang$html$Html$div,
+							{
+								ctor: '::',
+								_0: _elm_lang$html$Html_Attributes$class('col-md'),
+								_1: {ctor: '[]'}
+							},
+							{
+								ctor: '::',
+								_0: _ebberg$bergd$View$viewMenu(model),
+								_1: {
+									ctor: '::',
+									_0: A2(
+										_elm_lang$html$Html$br,
+										{ctor: '[]'},
+										{ctor: '[]'}),
+									_1: {
+										ctor: '::',
+										_0: function () {
+											var _p26 = model.screenType;
+											switch (_p26.ctor) {
+												case 'ViewCharacters':
+													return _ebberg$bergd$View$viewCharacters(model);
+												case 'MakeMove':
+													return _ebberg$bergd$View$viewMakeMove(model);
+												case 'CharacterSheet':
+													return _ebberg$bergd$View$viewCharacterSheet(model);
+												case 'Inventory':
+													return _ebberg$bergd$View$viewInventory(model);
+												case 'CharacterChoices':
+													return _ebberg$bergd$View$viewCharacterChoices(model);
+												case 'Prep':
+													return _ebberg$bergd$View$viewPrep(model);
+												default:
+													return A2(
+														_elm_lang$html$Html$div,
+														{ctor: '[]'},
+														{
+															ctor: '::',
+															_0: _elm_lang$html$Html$text('Error: not a valid screen type'),
+															_1: {ctor: '[]'}
+														});
+											}
+										}(),
+										_1: {
+											ctor: '::',
+											_0: A2(
+												_elm_lang$html$Html$br,
+												{ctor: '[]'},
+												{ctor: '[]'}),
+											_1: {ctor: '[]'}
+										}
+									}
+								}
+							}),
+						_1: {
+							ctor: '::',
+							_0: A2(
+								_elm_lang$html$Html$div,
+								{
+									ctor: '::',
+									_0: _elm_lang$html$Html_Attributes$class('col-md'),
+									_1: {ctor: '[]'}
+								},
+								{
+									ctor: '::',
+									_0: A2(
+										_evancz$elm_markdown$Markdown$toHtml,
+										{ctor: '[]'},
+										_ebberg$bergd$Content$contentSidePanel),
+									_1: {ctor: '[]'}
+								}),
+							_1: {ctor: '[]'}
+						}
+					}),
+				_1: {ctor: '[]'}
+			}
+		});
+};
+var _ebberg$bergd$View$viewFooter = A2(
+	_elm_lang$html$Html$div,
+	{
+		ctor: '::',
+		_0: _elm_lang$html$Html_Attributes$class('card'),
+		_1: {ctor: '[]'}
+	},
+	{
+		ctor: '::',
+		_0: A2(
+			_elm_lang$html$Html$div,
+			{
+				ctor: '::',
+				_0: _elm_lang$html$Html_Attributes$class('card-body'),
+				_1: {ctor: '[]'}
+			},
+			{
+				ctor: '::',
+				_0: A2(
+					_elm_lang$html$Html$h5,
+					{
+						ctor: '::',
+						_0: _elm_lang$html$Html_Attributes$class('card-title'),
+						_1: {ctor: '[]'}
+					},
+					{
+						ctor: '::',
+						_0: _elm_lang$html$Html$text('Dī Penātēs Solar Crawler'),
+						_1: {ctor: '[]'}
+					}),
+				_1: {
+					ctor: '::',
+					_0: A2(
+						_elm_lang$html$Html$p,
+						{ctor: '[]'},
+						{
+							ctor: '::',
+							_0: _elm_lang$html$Html$text('A Freeform LARP'),
+							_1: {
+								ctor: '::',
+								_0: A2(
+									_elm_lang$html$Html$br,
+									{ctor: '[]'},
+									{ctor: '[]'}),
+								_1: {
+									ctor: '::',
+									_0: _elm_lang$html$Html$text('A SciFi Mod of Dungeon World'),
+									_1: {ctor: '[]'}
+								}
+							}
+						}),
+					_1: {ctor: '[]'}
+				}
+			}),
+		_1: {ctor: '[]'}
+	});
+var _ebberg$bergd$View$selectRoom = A2(
+	_elm_lang$html$Html$select,
+	{
+		ctor: '::',
+		_0: _elm_lang$html$Html_Events$onInput(_ebberg$bergd$Update$ChangeRoom),
+		_1: {
+			ctor: '::',
+			_0: _elm_lang$html$Html_Attributes$class('custom-select custom-select-lg'),
+			_1: {ctor: '[]'}
+		}
+	},
+	A2(
+		_elm_lang$core$Basics_ops['++'],
+		{
+			ctor: '::',
+			_0: A2(
+				_elm_lang$html$Html$option,
+				{ctor: '[]'},
+				{
+					ctor: '::',
+					_0: _elm_lang$html$Html$text('Select Room'),
+					_1: {ctor: '[]'}
+				}),
+			_1: {ctor: '[]'}
+		},
+		A2(
+			_elm_lang$core$List$map,
+			function (x) {
+				return A2(
+					_elm_lang$html$Html$option,
+					{ctor: '[]'},
+					{
+						ctor: '::',
+						_0: _elm_lang$html$Html$text(x.name),
+						_1: {ctor: '[]'}
+					});
+			},
+			_ebberg$bergd$Model$house)));
+var _ebberg$bergd$View$viewHeader = function (model) {
+	return A2(
+		_elm_lang$html$Html$nav,
+		{
+			ctor: '::',
+			_0: _elm_lang$html$Html_Attributes$class('navbar navbar-expand-lg navbar-dark bg-primary'),
+			_1: {ctor: '[]'}
+		},
+		{
+			ctor: '::',
+			_0: A2(
+				_elm_lang$html$Html$span,
+				{
+					ctor: '::',
+					_0: _elm_lang$html$Html_Attributes$class('navbar-brand'),
+					_1: {ctor: '[]'}
+				},
+				{
+					ctor: '::',
+					_0: _elm_lang$html$Html$text('Dī Penātēs Solar Crawler v0.2.5'),
+					_1: {ctor: '[]'}
+				}),
+			_1: {
+				ctor: '::',
+				_0: A2(
+					_elm_lang$html$Html$select,
+					{
+						ctor: '::',
+						_0: _elm_lang$html$Html_Events$onInput(_ebberg$bergd$Update$ChangeCharacter),
+						_1: {
+							ctor: '::',
+							_0: _elm_lang$html$Html_Attributes$class('custom-select custom-select-lg'),
+							_1: {ctor: '[]'}
+						}
+					},
+					{
+						ctor: '::',
+						_0: A2(
+							_elm_lang$html$Html$option,
+							{ctor: '[]'},
+							{
+								ctor: '::',
+								_0: _elm_lang$html$Html$text('Select Player'),
+								_1: {ctor: '[]'}
+							}),
+						_1: {
+							ctor: '::',
+							_0: A2(
+								_elm_lang$html$Html$option,
+								{ctor: '[]'},
+								{
+									ctor: '::',
+									_0: _elm_lang$html$Html$text('Captain Lola (Paladin)'),
+									_1: {ctor: '[]'}
+								}),
+							_1: {
+								ctor: '::',
+								_0: A2(
+									_elm_lang$html$Html$option,
+									{ctor: '[]'},
+									{
+										ctor: '::',
+										_0: _elm_lang$html$Html$text('Dar (Bard)'),
+										_1: {ctor: '[]'}
+									}),
+								_1: {
+									ctor: '::',
+									_0: A2(
+										_elm_lang$html$Html$option,
+										{ctor: '[]'},
+										{
+											ctor: '::',
+											_0: _elm_lang$html$Html$text('Ix (Fighter)'),
+											_1: {ctor: '[]'}
+										}),
+									_1: {
+										ctor: '::',
+										_0: A2(
+											_elm_lang$html$Html$option,
+											{ctor: '[]'},
+											{
+												ctor: '::',
+												_0: _elm_lang$html$Html$text('Tommy the Cat (Thief)'),
+												_1: {ctor: '[]'}
+											}),
+										_1: {
+											ctor: '::',
+											_0: A2(
+												_elm_lang$html$Html$option,
+												{ctor: '[]'},
+												{
+													ctor: '::',
+													_0: _elm_lang$html$Html$text('ZarrN (Ranger)'),
+													_1: {ctor: '[]'}
+												}),
+											_1: {
+												ctor: '::',
+												_0: A2(
+													_elm_lang$html$Html$option,
+													{ctor: '[]'},
+													{
+														ctor: '::',
+														_0: _elm_lang$html$Html$text('Aero (Druid) '),
+														_1: {ctor: '[]'}
+													}),
+												_1: {
+													ctor: '::',
+													_0: A2(
+														_elm_lang$html$Html$option,
+														{ctor: '[]'},
+														{
+															ctor: '::',
+															_0: _elm_lang$html$Html$text('Mac (Wizard)'),
+															_1: {ctor: '[]'}
+														}),
+													_1: {
+														ctor: '::',
+														_0: A2(
+															_elm_lang$html$Html$option,
+															{ctor: '[]'},
+															{
+																ctor: '::',
+																_0: _elm_lang$html$Html$text('Drav (Cleric)'),
+																_1: {ctor: '[]'}
+															}),
+														_1: {
+															ctor: '::',
+															_0: A2(
+																_elm_lang$html$Html$option,
+																{ctor: '[]'},
+																{
+																	ctor: '::',
+																	_0: _elm_lang$html$Html$text('Dr Pachinka (Barbarian)'),
+																	_1: {ctor: '[]'}
+																}),
+															_1: {
+																ctor: '::',
+																_0: A2(
+																	_elm_lang$html$Html$option,
+																	{ctor: '[]'},
+																	{
+																		ctor: '::',
+																		_0: _elm_lang$html$Html$text('GM'),
+																		_1: {ctor: '[]'}
+																	}),
+																_1: {ctor: '[]'}
+															}
+														}
+													}
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					}),
+				_1: {
+					ctor: '::',
+					_0: A2(
+						_elm_lang$html$Html$select,
+						{
+							ctor: '::',
+							_0: _elm_lang$html$Html_Events$onInput(_ebberg$bergd$Update$ChangeLevel),
+							_1: {
+								ctor: '::',
+								_0: _elm_lang$html$Html_Attributes$class('custom-select custom-select-lg'),
+								_1: {ctor: '[]'}
+							}
+						},
+						{
+							ctor: '::',
+							_0: A2(
+								_elm_lang$html$Html$option,
+								{ctor: '[]'},
+								{
+									ctor: '::',
+									_0: _elm_lang$html$Html$text('Level 1'),
+									_1: {ctor: '[]'}
+								}),
+							_1: {
+								ctor: '::',
+								_0: A2(
+									_elm_lang$html$Html$option,
+									{ctor: '[]'},
+									{
+										ctor: '::',
+										_0: _elm_lang$html$Html$text('Level 2'),
+										_1: {ctor: '[]'}
+									}),
+								_1: {
+									ctor: '::',
+									_0: A2(
+										_elm_lang$html$Html$option,
+										{ctor: '[]'},
+										{
+											ctor: '::',
+											_0: _elm_lang$html$Html$text('Level 3'),
+											_1: {ctor: '[]'}
+										}),
+									_1: {
+										ctor: '::',
+										_0: A2(
+											_elm_lang$html$Html$option,
+											{ctor: '[]'},
+											{
+												ctor: '::',
+												_0: _elm_lang$html$Html$text('Level 4'),
+												_1: {ctor: '[]'}
+											}),
+										_1: {
+											ctor: '::',
+											_0: A2(
+												_elm_lang$html$Html$option,
+												{ctor: '[]'},
+												{
+													ctor: '::',
+													_0: _elm_lang$html$Html$text('Level 5'),
+													_1: {ctor: '[]'}
+												}),
+											_1: {ctor: '[]'}
+										}
+									}
+								}
+							}
+						}),
+					_1: {ctor: '[]'}
+				}
+			}
+		});
+};

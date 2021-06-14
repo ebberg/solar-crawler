@@ -1,0 +1,136 @@
+var _ebberg$bergd$App$subscriptions = function (model) {
+	return _elm_lang$core$Platform_Sub$none;
+};
+var _ebberg$bergd$App$view = function (model) {
+	return A2(
+		_elm_lang$html$Html$div,
+		{ctor: '[]'},
+		{
+			ctor: '::',
+			_0: _ebberg$bergd$View$viewHeader(model),
+			_1: {
+				ctor: '::',
+				_0: A2(
+					_elm_lang$html$Html$br,
+					{ctor: '[]'},
+					{ctor: '[]'}),
+				_1: {
+					ctor: '::',
+					_0: _ebberg$bergd$View$viewContent(model),
+					_1: {
+						ctor: '::',
+						_0: A2(
+							_elm_lang$html$Html$br,
+							{ctor: '[]'},
+							{ctor: '[]'}),
+						_1: {
+							ctor: '::',
+							_0: _ebberg$bergd$View$viewFooter,
+							_1: {ctor: '[]'}
+						}
+					}
+				}
+			}
+		});
+};
+var _ebberg$bergd$App$update = F2(
+	function (msg, model) {
+		var _p0 = msg;
+		switch (_p0.ctor) {
+			case 'Noop':
+				return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
+			case 'ChangeCharacter':
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{
+							characterType: _ebberg$bergd$Model$playerToCharacterType(_p0._0)
+						}),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
+			case 'ChangeLevel':
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{
+							level: _ebberg$bergd$Model$levelStringToLevel(_p0._0)
+						}),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
+			case 'ChangeScreenType':
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{screenType: _p0._0}),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
+			case 'ChangeRoom':
+				return {
+					ctor: '_Tuple2',
+					_0: function () {
+						var room = function () {
+							var _p1 = _elm_lang$core$List$head(
+								A2(
+									_elm_lang$core$List$filter,
+									function (x) {
+										return _elm_lang$core$Native_Utils.eq(x.name, _p0._0);
+									},
+									_ebberg$bergd$Model$house));
+							if (_p1.ctor === 'Just') {
+								return _p1._0;
+							} else {
+								return {
+									name: 'Error room not found',
+									qualities: {ctor: '[]'}
+								};
+							}
+						}();
+						return _elm_lang$core$Native_Utils.update(
+							model,
+							{room: room});
+					}(),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
+			case 'SetSeed':
+				return A2(_ebberg$bergd$Update$setSeed, model, _p0._0);
+			case 'Roll':
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{
+							roll: A2(
+								_elm_lang$core$Basics_ops['++'],
+								'Roll Result: ',
+								A2(_ebberg$bergd$View$rollResult, model, _p0._0))
+						}),
+					_1: A2(_elm_lang$core$Task$perform, _ebberg$bergd$Update$SetSeed, _elm_lang$core$Time$now)
+				};
+			default:
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{roll: ''}),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
+		}
+	});
+var _ebberg$bergd$App$init = {
+	ctor: '_Tuple2',
+	_0: {
+		characterType: _ebberg$bergd$Model$SelectCharacter,
+		screenType: _ebberg$bergd$Model$MakeMove,
+		room: _ebberg$bergd$Model$roomStairwell,
+		level: 1,
+		mod: 0,
+		seed: _elm_lang$core$Random$initialSeed(1),
+		roll: ''
+	},
+	_1: A2(_elm_lang$core$Task$perform, _ebberg$bergd$Update$SetSeed, _elm_lang$core$Time$now)
+};
+var _ebberg$bergd$App$main = _elm_lang$html$Html$program(
+	{init: _ebberg$bergd$App$init, view: _ebberg$bergd$App$view, update: _ebberg$bergd$App$update, subscriptions: _ebberg$bergd$App$subscriptions})();

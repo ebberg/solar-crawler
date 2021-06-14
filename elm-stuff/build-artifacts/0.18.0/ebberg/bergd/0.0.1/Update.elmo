@@ -1,0 +1,33 @@
+var _ebberg$bergd$Update$setSeed = F2(
+	function (model, currentTime) {
+		var seed0 = _elm_lang$core$Random$initialSeed(
+			_elm_lang$core$Basics$round(
+				_elm_lang$core$Time$inMilliseconds(currentTime)));
+		return {
+			ctor: '_Tuple2',
+			_0: _elm_lang$core$Native_Utils.update(
+				model,
+				{seed: seed0}),
+			_1: _elm_lang$core$Platform_Cmd$none
+		};
+	});
+var _ebberg$bergd$Update$ResetRoll = {ctor: 'ResetRoll'};
+var _ebberg$bergd$Update$Roll = function (a) {
+	return {ctor: 'Roll', _0: a};
+};
+var _ebberg$bergd$Update$SetSeed = function (a) {
+	return {ctor: 'SetSeed', _0: a};
+};
+var _ebberg$bergd$Update$ChangeRoom = function (a) {
+	return {ctor: 'ChangeRoom', _0: a};
+};
+var _ebberg$bergd$Update$ChangeLevel = function (a) {
+	return {ctor: 'ChangeLevel', _0: a};
+};
+var _ebberg$bergd$Update$ChangeScreenType = function (a) {
+	return {ctor: 'ChangeScreenType', _0: a};
+};
+var _ebberg$bergd$Update$ChangeCharacter = function (a) {
+	return {ctor: 'ChangeCharacter', _0: a};
+};
+var _ebberg$bergd$Update$Noop = {ctor: 'Noop'};

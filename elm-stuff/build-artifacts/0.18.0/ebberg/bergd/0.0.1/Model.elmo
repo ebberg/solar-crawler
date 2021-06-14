@@ -1,0 +1,2794 @@
+var _ebberg$bergd$Model$addLevelMods = F3(
+	function (model, character, statName) {
+		return _elm_lang$core$List$sum(
+			A2(
+				_elm_lang$core$List$map,
+				function (_p0) {
+					return 1;
+				},
+				A2(
+					_elm_lang$core$List$filter,
+					function (increaseStatName) {
+						return _elm_lang$core$Native_Utils.eq(increaseStatName, statName);
+					},
+					A2(_elm_lang$core$List$take, model.level - 1, character.statIncreases)))) + function () {
+			var _p1 = statName;
+			switch (_p1) {
+				case 'str':
+					return character.str;
+				case 'dex':
+					return character.dex;
+				case 'con':
+					return character.con;
+				case 'int':
+					return character.$int;
+				case 'wis':
+					return character.wis;
+				case 'cha':
+					return character.cha;
+				default:
+					return 9000;
+			}
+		}();
+	});
+var _ebberg$bergd$Model$isActiveCharacter = F2(
+	function (model, characterType) {
+		return _elm_lang$core$Native_Utils.eq(characterType, model.characterType) ? A2(_elm_lang$core$Basics_ops['++'], ' ', 'active') : '';
+	});
+var _ebberg$bergd$Model$isActiveScreenType = F2(
+	function (model, screenType) {
+		return _elm_lang$core$Native_Utils.eq(screenType, model.screenType) ? A2(_elm_lang$core$Basics_ops['++'], ' ', 'active') : '';
+	});
+var _ebberg$bergd$Model$levelStringToLevel = function (s) {
+	var _p2 = s;
+	switch (_p2) {
+		case 'Level 1':
+			return 1;
+		case 'Level 2':
+			return 2;
+		case 'Level 3':
+			return 3;
+		case 'Level 4':
+			return 4;
+		case 'Level 5':
+			return 5;
+		default:
+			return 0;
+	}
+};
+var _ebberg$bergd$Model$modFromStat = function (stat) {
+	var _p3 = stat;
+	switch (_p3) {
+		case 18:
+			return _elm_lang$core$Maybe$Just(3);
+		case 17:
+			return _elm_lang$core$Maybe$Just(2);
+		case 16:
+			return _elm_lang$core$Maybe$Just(2);
+		case 15:
+			return _elm_lang$core$Maybe$Just(1);
+		case 14:
+			return _elm_lang$core$Maybe$Just(1);
+		case 13:
+			return _elm_lang$core$Maybe$Just(1);
+		case 12:
+			return _elm_lang$core$Maybe$Just(0);
+		case 11:
+			return _elm_lang$core$Maybe$Just(0);
+		case 10:
+			return _elm_lang$core$Maybe$Just(0);
+		case 9:
+			return _elm_lang$core$Maybe$Just(0);
+		case 8:
+			return _elm_lang$core$Maybe$Just(-1);
+		case 7:
+			return _elm_lang$core$Maybe$Just(-1);
+		case 6:
+			return _elm_lang$core$Maybe$Just(-1);
+		case 5:
+			return _elm_lang$core$Maybe$Just(-2);
+		case 4:
+			return _elm_lang$core$Maybe$Just(-2);
+		case 3:
+			return _elm_lang$core$Maybe$Just(-3);
+		case 2:
+			return _elm_lang$core$Maybe$Just(-3);
+		case 1:
+			return _elm_lang$core$Maybe$Just(-3);
+		default:
+			return _elm_lang$core$Maybe$Nothing;
+	}
+};
+var _ebberg$bergd$Model$displayModFromStat = function (stat) {
+	var _p4 = _ebberg$bergd$Model$modFromStat(stat);
+	if (_p4.ctor === 'Just') {
+		var _p6 = _p4._0;
+		var _p5 = _elm_lang$core$Native_Utils.cmp(_p6, 0) > 0;
+		if (_p5 === true) {
+			return A2(
+				_elm_lang$core$Basics_ops['++'],
+				'+',
+				_elm_lang$core$Basics$toString(_p6));
+		} else {
+			return _elm_lang$core$Basics$toString(_p6);
+		}
+	} else {
+		return 'error: mod from stat not calculated';
+	}
+};
+var _ebberg$bergd$Model$filterLevelMoves = F2(
+	function (model, moveSet) {
+		return A2(
+			_elm_lang$core$List$filter,
+			function (m) {
+				return _elm_lang$core$Native_Utils.cmp(model.level, m.level) > -1;
+			},
+			moveSet.moves);
+	});
+var _ebberg$bergd$Model$extractMoveType = F2(
+	function (character, move) {
+		return move.type_;
+	});
+var _ebberg$bergd$Model$getMoveTypes = F2(
+	function (model, character) {
+		return A2(
+			_elm_lang$core$List$map,
+			_ebberg$bergd$Model$extractMoveType(character),
+			A2(
+				_elm_lang$core$List$concatMap,
+				function (moveSet) {
+					return A2(_ebberg$bergd$Model$filterLevelMoves, model, moveSet);
+				},
+				character.moves));
+	});
+var _ebberg$bergd$Model$hp = F2(
+	function (model, character) {
+		return (_elm_lang$core$List$sum(
+			A2(
+				_elm_lang$core$List$map,
+				function (_p7) {
+					return 1;
+				},
+				A2(
+					_elm_lang$core$List$filter,
+					function (increaseStatName) {
+						return _elm_lang$core$Native_Utils.eq(increaseStatName, 'con');
+					},
+					A2(_elm_lang$core$List$take, model.level - 1, character.statIncreases)))) + character.con) + character.baseHP;
+	});
+var _ebberg$bergd$Model$chaDefyDanger = 'using charm and social grace, ';
+var _ebberg$bergd$Model$wisDefyDanger = 'through mental fortitude, ';
+var _ebberg$bergd$Model$intDefyDanger = 'with quick thinking, ';
+var _ebberg$bergd$Model$conDefyDanger = 'by enduring, ';
+var _ebberg$bergd$Model$dexDefyDanger = 'by getting out of the way or acting fast, ';
+var _ebberg$bergd$Model$strDefyDanger = 'by powering through, ';
+var _ebberg$bergd$Model$moveTypeToString = function (type_) {
+	return _elm_lang$core$Basics$toString(type_);
+};
+var _ebberg$bergd$Model$roomLiving = {
+	name: 'Living Room',
+	qualities: {ctor: '[]'}
+};
+var _ebberg$bergd$Model$roomLibrary = {
+	name: 'Library',
+	qualities: {ctor: '[]'}
+};
+var _ebberg$bergd$Model$roomSun = {
+	name: 'Sun Room',
+	qualities: {ctor: '[]'}
+};
+var _ebberg$bergd$Model$roomDining = {
+	name: 'Dining Room',
+	qualities: {ctor: '[]'}
+};
+var _ebberg$bergd$Model$roomStairwell = {
+	name: 'Stairwell',
+	qualities: {ctor: '[]'}
+};
+var _ebberg$bergd$Model$house = {
+	ctor: '::',
+	_0: _ebberg$bergd$Model$roomStairwell,
+	_1: {
+		ctor: '::',
+		_0: _ebberg$bergd$Model$roomDining,
+		_1: {
+			ctor: '::',
+			_0: _ebberg$bergd$Model$roomLiving,
+			_1: {
+				ctor: '::',
+				_0: _ebberg$bergd$Model$roomSun,
+				_1: {
+					ctor: '::',
+					_0: _ebberg$bergd$Model$roomLibrary,
+					_1: {ctor: '[]'}
+				}
+			}
+		}
+	}
+};
+var _ebberg$bergd$Model$Model = F7(
+	function (a, b, c, d, e, f, g) {
+		return {characterType: a, screenType: b, room: c, level: d, mod: e, seed: f, roll: g};
+	});
+var _ebberg$bergd$Model$Room = F2(
+	function (a, b) {
+		return {name: a, qualities: b};
+	});
+var _ebberg$bergd$Model$Character = function (a) {
+	return function (b) {
+		return function (c) {
+			return function (d) {
+				return function (e) {
+					return function (f) {
+						return function (g) {
+							return function (h) {
+								return function (i) {
+									return function (j) {
+										return function (k) {
+											return function (l) {
+												return function (m) {
+													return function (n) {
+														return function (o) {
+															return function (p) {
+																return {str: a, dex: b, con: c, wis: d, $int: e, cha: f, moves: g, name: h, desc: i, twist: j, finale: k, origin: l, type_: m, baseHP: n, baseDamage: o, statIncreases: p};
+															};
+														};
+													};
+												};
+											};
+										};
+									};
+								};
+							};
+						};
+					};
+				};
+			};
+		};
+	};
+};
+var _ebberg$bergd$Model$CharacterLegacy = function (a) {
+	return function (b) {
+		return function (c) {
+			return function (d) {
+				return function (e) {
+					return function (f) {
+						return function (g) {
+							return function (h) {
+								return function (i) {
+									return function (j) {
+										return function (k) {
+											return {str: a, dex: b, con: c, wis: d, $int: e, cha: f, moves: g, name: h, desc: i, origin: j, type_: k};
+										};
+									};
+								};
+							};
+						};
+					};
+				};
+			};
+		};
+	};
+};
+var _ebberg$bergd$Model$MoveGroup = F2(
+	function (a, b) {
+		return {title: a, moves: b};
+	});
+var _ebberg$bergd$Model$MoveSet = F3(
+	function (a, b, c) {
+		return {title: a, id: b, moves: c};
+	});
+var _ebberg$bergd$Model$Move = F5(
+	function (a, b, c, d, e) {
+		return {type_: a, title: b, desc: c, roll: d, level: e};
+	});
+var _ebberg$bergd$Model$MoveLegacy = F3(
+	function (a, b, c) {
+		return {desc: a, roll: b, level: c};
+	});
+var _ebberg$bergd$Model$RollLegacy = F2(
+	function (a, b) {
+		return {mod: a, dice: b};
+	});
+var _ebberg$bergd$Model$DivineFavor = {ctor: 'DivineFavor'};
+var _ebberg$bergd$Model$Quest = {ctor: 'Quest'};
+var _ebberg$bergd$Model$Law = {ctor: 'Law'};
+var _ebberg$bergd$Model$LayOnHands = {ctor: 'LayOnHands'};
+var _ebberg$bergd$Model$BlotOutTheSun = {ctor: 'BlotOutTheSun'};
+var _ebberg$bergd$Model$WildEmpathy = {ctor: 'WildEmpathy'};
+var _ebberg$bergd$Model$FamiliarPrey = {ctor: 'FamiliarPrey'};
+var _ebberg$bergd$Model$GodAmidstTheWastes = {ctor: 'GodAmidstTheWastes'};
+var _ebberg$bergd$Model$AnimalCompanion = {ctor: 'AnimalCompanion'};
+var _ebberg$bergd$Model$CalledShot = {ctor: 'CalledShot'};
+var _ebberg$bergd$Model$HuntAndTrack = {ctor: 'HuntAndTrack'};
+var _ebberg$bergd$Model$Heirloom = {ctor: 'Heirloom'};
+var _ebberg$bergd$Model$Interrogator = {ctor: 'Interrogator'};
+var _ebberg$bergd$Model$ArmorMastery = {ctor: 'ArmorMastery'};
+var _ebberg$bergd$Model$Exterminus = {ctor: 'Exterminus'};
+var _ebberg$bergd$Model$Merciless = {ctor: 'Merciless'};
+var _ebberg$bergd$Model$BloodyAegis = {ctor: 'BloodyAegis'};
+var _ebberg$bergd$Model$Hospitaller = {ctor: 'Hospitaller'};
+var _ebberg$bergd$Model$SignatureWeapon = {ctor: 'SignatureWeapon'};
+var _ebberg$bergd$Model$Armored = {ctor: 'Armored'};
+var _ebberg$bergd$Model$BendBarsLiftGates = {ctor: 'BendBarsLiftGates'};
+var _ebberg$bergd$Model$OrisonForGuidance = {ctor: 'OrisonForGuidance'};
+var _ebberg$bergd$Model$DevotedHealer = {ctor: 'DevotedHealer'};
+var _ebberg$bergd$Model$DivineIntervention = {ctor: 'DivineIntervention'};
+var _ebberg$bergd$Model$Serenity = {ctor: 'Serenity'};
+var _ebberg$bergd$Model$SpellClericDarkness = {ctor: 'SpellClericDarkness'};
+var _ebberg$bergd$Model$SpellClericAnimateDead = {ctor: 'SpellClericAnimateDead'};
+var _ebberg$bergd$Model$SpellClericRevelation = {ctor: 'SpellClericRevelation'};
+var _ebberg$bergd$Model$SpellClericTrueSeeing = {ctor: 'SpellClericTrueSeeing'};
+var _ebberg$bergd$Model$SpellClericHoldPerson = {ctor: 'SpellClericHoldPerson'};
+var _ebberg$bergd$Model$SpellClericCureModerateWounds = {ctor: 'SpellClericCureModerateWounds'};
+var _ebberg$bergd$Model$SpellClericBless = {ctor: 'SpellClericBless'};
+var _ebberg$bergd$Model$SpellClericRes = {ctor: 'SpellClericRes'};
+var _ebberg$bergd$Model$SpellClericSanctuary = {ctor: 'SpellClericSanctuary'};
+var _ebberg$bergd$Model$SpellClericMagicWeapon = {ctor: 'SpellClericMagicWeapon'};
+var _ebberg$bergd$Model$SpellClericCauseFear = {ctor: 'SpellClericCauseFear'};
+var _ebberg$bergd$Model$SpellClericSpeakWithDead = {ctor: 'SpellClericSpeakWithDead'};
+var _ebberg$bergd$Model$SpellClericCureLightWounds = {ctor: 'SpellClericCureLightWounds'};
+var _ebberg$bergd$Model$SpellClericGuidance = {ctor: 'SpellClericGuidance'};
+var _ebberg$bergd$Model$SpellClericSanctify = {ctor: 'SpellClericSanctify'};
+var _ebberg$bergd$Model$SpellClericLight = {ctor: 'SpellClericLight'};
+var _ebberg$bergd$Model$ClericCastSpell = {ctor: 'ClericCastSpell'};
+var _ebberg$bergd$Model$TurnUndead = {ctor: 'TurnUndead'};
+var _ebberg$bergd$Model$DivineGuidance = {ctor: 'DivineGuidance'};
+var _ebberg$bergd$Model$Deity = {ctor: 'Deity'};
+var _ebberg$bergd$Model$EyeForWeakness = {ctor: 'EyeForWeakness'};
+var _ebberg$bergd$Model$Usurper = {ctor: 'Usurper'};
+var _ebberg$bergd$Model$Smash = {ctor: 'Smash'};
+var _ebberg$bergd$Model$Samson = {ctor: 'Samson'};
+var _ebberg$bergd$Model$WideWanderer = {ctor: 'WideWanderer'};
+var _ebberg$bergd$Model$FullPlatePackingSteel = {ctor: 'FullPlatePackingSteel'};
+var _ebberg$bergd$Model$WhatAreYouWaitingFor = {ctor: 'WhatAreYouWaitingFor'};
+var _ebberg$bergd$Model$Musclebound = {ctor: 'Musclebound'};
+var _ebberg$bergd$Model$TheUpperHand = {ctor: 'TheUpperHand'};
+var _ebberg$bergd$Model$HercApp = {ctor: 'HercApp'};
+var _ebberg$bergd$Model$MulticlassDabbler = {ctor: 'MulticlassDabbler'};
+var _ebberg$bergd$Model$ViciousCacophony = {ctor: 'ViciousCacophony'};
+var _ebberg$bergd$Model$HealingSong = {ctor: 'HealingSong'};
+var _ebberg$bergd$Model$EldritchTones = {ctor: 'EldritchTones'};
+var _ebberg$bergd$Model$Cacophony = {ctor: 'Cacophony'};
+var _ebberg$bergd$Model$CharmingOpen = {ctor: 'CharmingOpen'};
+var _ebberg$bergd$Model$PortStorm = {ctor: 'PortStorm'};
+var _ebberg$bergd$Model$CheapShot = {ctor: 'CheapShot'};
+var _ebberg$bergd$Model$ShootFirst = {ctor: 'ShootFirst'};
+var _ebberg$bergd$Model$Connections = {ctor: 'Connections'};
+var _ebberg$bergd$Model$Cautious = {ctor: 'Cautious'};
+var _ebberg$bergd$Model$TrapExpert = {ctor: 'TrapExpert'};
+var _ebberg$bergd$Model$TricksOfTheTrade = {ctor: 'TricksOfTheTrade'};
+var _ebberg$bergd$Model$Backstab = {ctor: 'Backstab'};
+var _ebberg$bergd$Model$Poisoner = {ctor: 'Poisoner'};
+var _ebberg$bergd$Model$Professional = {ctor: 'Professional'};
+var _ebberg$bergd$Model$ElementalMastery = {ctor: 'ElementalMastery'};
+var _ebberg$bergd$Model$CommunionOfWhispers = {ctor: 'CommunionOfWhispers'};
+var _ebberg$bergd$Model$ThingTalker = {ctor: 'ThingTalker'};
+var _ebberg$bergd$Model$RedOfToothAndClaw = {ctor: 'RedOfToothAndClaw'};
+var _ebberg$bergd$Model$HuntersBrother = {ctor: 'HuntersBrother'};
+var _ebberg$bergd$Model$StudiedEssence = {ctor: 'StudiedEssence'};
+var _ebberg$bergd$Model$Shapeshifter = {ctor: 'Shapeshifter'};
+var _ebberg$bergd$Model$SpiritTongue = {ctor: 'SpiritTongue'};
+var _ebberg$bergd$Model$ByNatureSustained = {ctor: 'ByNatureSustained'};
+var _ebberg$bergd$Model$BornOfTheSoil = {ctor: 'BornOfTheSoil'};
+var _ebberg$bergd$Model$WizardCastSpell = {ctor: 'WizardCastSpell'};
+var _ebberg$bergd$Model$QuickStudy = {ctor: 'QuickStudy'};
+var _ebberg$bergd$Model$Counterspell = {ctor: 'Counterspell'};
+var _ebberg$bergd$Model$FountOfKnowledge = {ctor: 'FountOfKnowledge'};
+var _ebberg$bergd$Model$Logical = {ctor: 'Logical'};
+var _ebberg$bergd$Model$Ritual = {ctor: 'Ritual'};
+var _ebberg$bergd$Model$SpellDefense = {ctor: 'SpellDefense'};
+var _ebberg$bergd$Model$theSmugglerMoves = {
+	ctor: '::',
+	_0: {
+		type_: _ebberg$bergd$Model$WizardCastSpell,
+		title: 'Cast a Spell',
+		desc: _ebberg$bergd$Content$contentWizardCastSpell,
+		roll: {ctor: '[]'},
+		level: 1
+	},
+	_1: {
+		ctor: '::',
+		_0: {
+			type_: _ebberg$bergd$Model$SpellDefense,
+			title: 'Spell Defense',
+			desc: _ebberg$bergd$Content$contentSpellDefense,
+			roll: {ctor: '[]'},
+			level: 1
+		},
+		_1: {
+			ctor: '::',
+			_0: {
+				type_: _ebberg$bergd$Model$Ritual,
+				title: 'Ritual',
+				desc: _ebberg$bergd$Content$contentRitual,
+				roll: {ctor: '[]'},
+				level: 1
+			},
+			_1: {ctor: '[]'}
+		}
+	}
+};
+var _ebberg$bergd$Model$theSmugglerMoveSet = {
+	ctor: '::',
+	_0: {title: 'The Smuggler\'s Moves', moves: _ebberg$bergd$Model$theSmugglerMoves, id: 'SmugglerMoves'},
+	_1: {ctor: '[]'}
+};
+var _ebberg$bergd$Model$SpellWizardFireball = {ctor: 'SpellWizardFireball'};
+var _ebberg$bergd$Model$SpellWizardPolymorph = {ctor: 'SpellWizardPolymorph'};
+var _ebberg$bergd$Model$SpellWizardSleep = {ctor: 'SpellWizardSleep'};
+var _ebberg$bergd$Model$SpellWizardDispelMagic = {ctor: 'SpellWizardDispelMagic'};
+var _ebberg$bergd$Model$SpellWizardDetectMagic = {ctor: 'SpellWizardDetectMagic'};
+var _ebberg$bergd$Model$SpellWizardMagicMissile = {ctor: 'SpellWizardMagicMissile'};
+var _ebberg$bergd$Model$SpellWizardInvisibility = {ctor: 'SpellWizardInvisibility'};
+var _ebberg$bergd$Model$SpellWizardAlarm = {ctor: 'SpellWizardAlarm'};
+var _ebberg$bergd$Model$SpellWizardContactSpirits = {ctor: 'SpellWizardContactSpirits'};
+var _ebberg$bergd$Model$SpellWizardCharmPerson = {ctor: 'SpellWizardCharmPerson'};
+var _ebberg$bergd$Model$SpellWizardLight = {ctor: 'SpellWizardLight'};
+var _ebberg$bergd$Model$SpellWizardUnseenServant = {ctor: 'SpellWizardUnseenServant'};
+var _ebberg$bergd$Model$SpellWizardPrestidigitation = {ctor: 'SpellWizardPrestidigitation'};
+var _ebberg$bergd$Model$LoreExpert = {ctor: 'LoreExpert'};
+var _ebberg$bergd$Model$ArcaneArt = {ctor: 'ArcaneArt'};
+var _ebberg$bergd$Model$DefyDangerCha = {ctor: 'DefyDangerCha'};
+var _ebberg$bergd$Model$DefyDangerInt = {ctor: 'DefyDangerInt'};
+var _ebberg$bergd$Model$DefyDangerWis = {ctor: 'DefyDangerWis'};
+var _ebberg$bergd$Model$DefyDangerDex = {ctor: 'DefyDangerDex'};
+var _ebberg$bergd$Model$DefyDangerCon = {ctor: 'DefyDangerCon'};
+var _ebberg$bergd$Model$DefyDangerStr = {ctor: 'DefyDangerStr'};
+var _ebberg$bergd$Model$DefyDanger = {ctor: 'DefyDanger'};
+var _ebberg$bergd$Model$Parley = {ctor: 'Parley'};
+var _ebberg$bergd$Model$Defend = {ctor: 'Defend'};
+var _ebberg$bergd$Model$Volley = {ctor: 'Volley'};
+var _ebberg$bergd$Model$HackSlash = {ctor: 'HackSlash'};
+var _ebberg$bergd$Model$DiscernRealities = {ctor: 'DiscernRealities'};
+var _ebberg$bergd$Model$SpoutLore = {ctor: 'SpoutLore'};
+var _ebberg$bergd$Model$PresentChallengesToOne = {ctor: 'PresentChallengesToOne'};
+var _ebberg$bergd$Model$PresentRichesPrice = {ctor: 'PresentRichesPrice'};
+var _ebberg$bergd$Model$MakeThemBacktrack = {ctor: 'MakeThemBacktrack'};
+var _ebberg$bergd$Model$UseExistingThreat = {ctor: 'UseExistingThreat'};
+var _ebberg$bergd$Model$IntroduceNewFaction = {ctor: 'IntroduceNewFaction'};
+var _ebberg$bergd$Model$PointLoomingThreat = {ctor: 'PointLoomingThreat'};
+var _ebberg$bergd$Model$ChangeEnvironment = {ctor: 'ChangeEnvironment'};
+var _ebberg$bergd$Model$ConsequencesAndAsk = {ctor: 'ConsequencesAndAsk'};
+var _ebberg$bergd$Model$PutSomeoneInASpot = {ctor: 'PutSomeoneInASpot'};
+var _ebberg$bergd$Model$GiveOpportunityWithWithoutCost = {ctor: 'GiveOpportunityWithWithoutCost'};
+var _ebberg$bergd$Model$ShowDownside = {ctor: 'ShowDownside'};
+var _ebberg$bergd$Model$GiveOpportunityAbilityFit = {ctor: 'GiveOpportunityAbilityFit'};
+var _ebberg$bergd$Model$SeparateThem = {ctor: 'SeparateThem'};
+var _ebberg$bergd$Model$TurnMoveBack = {ctor: 'TurnMoveBack'};
+var _ebberg$bergd$Model$UseUpResources = {ctor: 'UseUpResources'};
+var _ebberg$bergd$Model$DealDamage = {ctor: 'DealDamage'};
+var _ebberg$bergd$Model$ShowSignsThreat = {ctor: 'ShowSignsThreat'};
+var _ebberg$bergd$Model$RevealUnwelcomeTruth = {ctor: 'RevealUnwelcomeTruth'};
+var _ebberg$bergd$Model$UseExternalMove = {ctor: 'UseExternalMove'};
+var _ebberg$bergd$Model$theDirectorMoves = {
+	ctor: '::',
+	_0: {
+		title: 'The Director\'s Moves',
+		id: 'DirectorMoves',
+		moves: {
+			ctor: '::',
+			_0: {
+				type_: _ebberg$bergd$Model$UseExternalMove,
+				title: 'Use a monster, danger, or location move',
+				desc: _ebberg$bergd$Content$contentUseExternalMove,
+				roll: {ctor: '[]'},
+				level: 1
+			},
+			_1: {
+				ctor: '::',
+				_0: {
+					type_: _ebberg$bergd$Model$RevealUnwelcomeTruth,
+					title: 'Reveal an unwelcome truth',
+					desc: '\nAn unwelcome truth is a fact the players wish wasn’t true: that the room’s been trapped, maybe, or that the helpful goblin is actually a spy. Reveal to the players just how much trouble they’re in.\n              ',
+					roll: {ctor: '[]'},
+					level: 1
+				},
+				_1: {
+					ctor: '::',
+					_0: {
+						type_: _ebberg$bergd$Model$ShowSignsThreat,
+						title: 'Show signs of an approaching threat',
+						desc: '\nThis is one of your most versatile moves. “Threat” means anything bad that’s on the way. With this move, you just show them that something’s going to happen unless they do something about it.\n              ',
+						roll: {ctor: '[]'},
+						level: 1
+					},
+					_1: {
+						ctor: '::',
+						_0: {
+							type_: _ebberg$bergd$Model$DealDamage,
+							title: 'Deal damage',
+							desc: _ebberg$bergd$Content$contentDealDamage,
+							roll: {ctor: '[]'},
+							level: 1
+						},
+						_1: {
+							ctor: '::',
+							_0: {
+								type_: _ebberg$bergd$Model$UseUpResources,
+								title: 'Use up their resources',
+								desc: '\nSurviving in a dungeon, or anywhere dangerous, often comes down to supplies. With this move, something happens to use up some resource: weapons, armor, healing, ongoing spells. You don’t always have to use it up permanently. A sword might just be flung to the other side of the room, not shattered.\n              ',
+								roll: {ctor: '[]'},
+								level: 1
+							},
+							_1: {
+								ctor: '::',
+								_0: {
+									type_: _ebberg$bergd$Model$TurnMoveBack,
+									title: 'Turn their move back on them',
+									desc: _ebberg$bergd$Content$contentTurnMoveBack,
+									roll: {ctor: '[]'},
+									level: 1
+								},
+								_1: {
+									ctor: '::',
+									_0: {
+										type_: _ebberg$bergd$Model$SeparateThem,
+										title: 'Separate them',
+										desc: '\nThere are few things worse than being in the middle of a raging battle with blood-thirsty owlbears on all sides—one of those things is being in the middle of that battle with no one at your back.\n\nSeparating the characters can mean anything from being pushed apart in the heat of battle to being teleported to the far end of the dungeon. Whatever way it occurs, it’s bound to cause problems.\n              ',
+										roll: {ctor: '[]'},
+										level: 1
+									},
+									_1: {
+										ctor: '::',
+										_0: {
+											type_: _ebberg$bergd$Model$GiveOpportunityAbilityFit,
+											title: 'Give an opportunity that fits an adventurer\'s abilities',
+											desc: '\nThe thief disables traps, sneaks, and picks locks. The cleric deals with the divine and the dead. Every class has things that they shine at—present an opportunity that plays to what one class shines at.\n\nIt doesn’t have to be a class that’s in play right now though. Sometimes a locked door stands between you and treasure and there’s no thief in sight. This is an invitation for invention, bargaining, and creativity. If all you’ve got is a bloody axe doesn’t every problem look like a skull?\n              ',
+											roll: {ctor: '[]'},
+											level: 1
+										},
+										_1: {
+											ctor: '::',
+											_0: {
+												type_: _ebberg$bergd$Model$ShowDownside,
+												title: 'Show a downside to an aspect of a character',
+												desc: '\nJust as every class shines, they all have their weaknesses too. Do orcs have a special thirst for elven blood? Is the cleric’s magic disturbing dangerous forces? The torch that lights the way also draws attention from eyes in the dark.\n              ',
+												roll: {ctor: '[]'},
+												level: 1
+											},
+											_1: {
+												ctor: '::',
+												_0: {
+													type_: _ebberg$bergd$Model$GiveOpportunityWithWithoutCost,
+													title: 'Offer an opportunity, with or without cost',
+													desc: '\nShow them something they want: riches, power, glory. If you want, you can associate some cost with it too, of course.\n\nRemember to lead with the fiction. You don’t say, “This area isn’t dangerous so you can make camp here, if you’re willing to take the time.” You make it a solid fictional thing and say, “Helferth’s blessings still hang around the shattered altar. It’s a nice safe spot, but the chanting from the ritual chamber is getting louder. What do you do?”\n              ',
+													roll: {ctor: '[]'},
+													level: 1
+												},
+												_1: {
+													ctor: '::',
+													_0: {
+														type_: _ebberg$bergd$Model$PutSomeoneInASpot,
+														title: 'Put someone in a spot',
+														desc: '\nA spot is someplace where a character needs to make tough choices. Put them, or something they care about, in the path of destruction. The harder the choice, the tougher the spot.\n              ',
+														roll: {ctor: '[]'},
+														level: 1
+													},
+													_1: {
+														ctor: '::',
+														_0: {
+															type_: _ebberg$bergd$Model$ConsequencesAndAsk,
+															title: 'Tell them the requirements or consequences and ask',
+															desc: '\nThis move is particularly good when they want something that’s not covered by a move, or they’ve failed a move. They can do it, sure, but they’ll have to pay the price. Or, they can do it, but there will be consequences. Maybe they can swim through the shark-infested moat before being devoured, but they’ll need a distraction. Of course, this is made clear to the characters, not just the players: the sharks are in a starved frenzy, for example.\n              ',
+															roll: {ctor: '[]'},
+															level: 1
+														},
+														_1: {ctor: '[]'}
+													}
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	},
+	_1: {
+		ctor: '::',
+		_0: {
+			title: 'Dungeon Moves',
+			id: 'DungeonMoves',
+			moves: {
+				ctor: '::',
+				_0: {
+					type_: _ebberg$bergd$Model$ChangeEnvironment,
+					title: 'Change the environment',
+					desc: _ebberg$bergd$Content$contentChangeEnvironment,
+					roll: {ctor: '[]'},
+					level: 1
+				},
+				_1: {
+					ctor: '::',
+					_0: {
+						type_: _ebberg$bergd$Model$PointLoomingThreat,
+						title: 'Point to a looming threat',
+						desc: '\nIf you know that something is lurking and waiting for the players to stumble upon it, this move shows them the signs and clues. This move is the dragon’s footprints in the mud or the slimy trail of the gelatinous cube.\n              ',
+						roll: {ctor: '[]'},
+						level: 1
+					},
+					_1: {
+						ctor: '::',
+						_0: {
+							type_: _ebberg$bergd$Model$IntroduceNewFaction,
+							title: 'Introduce a new faction or type of creature',
+							desc: _ebberg$bergd$Content$contentIntroduceNewFaction,
+							roll: {ctor: '[]'},
+							level: 1
+						},
+						_1: {
+							ctor: '::',
+							_0: {
+								type_: _ebberg$bergd$Model$UseExistingThreat,
+								title: 'Use a threat from an existing faction or type of creature',
+								desc: '\nOnce the characters have been introduced to the presence of a faction or type of creature you can use moves of monsters of that type.\n\nUse the factions and types broadly. Orcs are accompanied with their hunting worgs. A mad cult probably has some undead servants or maybe a few beasts summoned from the abyssal pits. This is a move that, often, you’ll be making subconsciously—it’s just implementing the tools you’ve set out for yourself in a clear and effective manner.\n               ',
+								roll: {ctor: '[]'},
+								level: 1
+							},
+							_1: {
+								ctor: '::',
+								_0: {
+									type_: _ebberg$bergd$Model$MakeThemBacktrack,
+									title: 'Make them backtrack',
+									desc: '\nLook back at the spaces you’ve added to the map. Is there anything useful there as yet undiscovered? Can you add a new obstacle that can only be overcome by going back there? Is there a locked door here and now whose key lies in an earlier room?\n\nWhen backtracking, show the effect that time has had on the areas they’ve left behind. What new threats have sprung up in their wake? What didn’t they take care of that’s waiting for their return?\n\nUse this move the make the dungeon a living, breathing place. There is no stasis in the wake of the characters’ passing. Add reinforcements, cave in walls, cause chaos. The dungeon evolves in the wake of the characters’ actions.\n              ',
+									roll: {ctor: '[]'},
+									level: 1
+								},
+								_1: {
+									ctor: '::',
+									_0: {
+										type_: _ebberg$bergd$Model$PresentRichesPrice,
+										title: 'Present riches at a price',
+										desc: '\nWhat do the players want? What would they sacrifice for it?\n\nPut some desirable item just out of reach. Find something they’re short on: time, HP, gear, whatever. Find a way to make what they want available if they give up what they have.\n\nThe simplest way to use this move is the promise of gold out of the way of the main objective. Will they stop to pry the ruby eyes from the idol when they know that the sacrifice looms closer and closer? Use this move and you can find out.\n              ',
+										roll: {ctor: '[]'},
+										level: 1
+									},
+									_1: {
+										ctor: '::',
+										_0: {
+											type_: _ebberg$bergd$Model$PresentChallengesToOne,
+											title: 'Present challenges to one of the characters',
+											desc: '\nChallenge a character by looking at what they’re good at. Give the thief a lock to pick, show the cleric servants of an enemy god to battle against. Give the wizard magical mysteries to investigate. Show the fighter some skulls to crack. Give someone a chance to shine.\n\nAs an alternative, challenge a character by looking at what they’re bad at or what they’ve left unresolved. If the bard has a complicated lie on his conscience, what steps will he take to cover it up when someone figures him out? If the wizard has been summoning demons, what happens when word gets out?\n\nThis move can give a character the spotlight—even if just for a moment. Try to give everyone a chance to be the focus of play using this move from session to session.\n              ',
+											roll: {ctor: '[]'},
+											level: 1
+										},
+										_1: {ctor: '[]'}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		_1: {ctor: '[]'}
+	}
+};
+var _ebberg$bergd$Model$RollReason = F2(
+	function (a, b) {
+		return {ctor: 'RollReason', _0: a, _1: b};
+	});
+var _ebberg$bergd$Model$RollTwelve = {ctor: 'RollTwelve'};
+var _ebberg$bergd$Model$RollTen = {ctor: 'RollTen'};
+var _ebberg$bergd$Model$RollEight = {ctor: 'RollEight'};
+var _ebberg$bergd$Model$RollSix = {ctor: 'RollSix'};
+var _ebberg$bergd$Model$RollFour = {ctor: 'RollFour'};
+var _ebberg$bergd$Model$RollStr = {ctor: 'RollStr'};
+var _ebberg$bergd$Model$RollDex = {ctor: 'RollDex'};
+var _ebberg$bergd$Model$RollCon = {ctor: 'RollCon'};
+var _ebberg$bergd$Model$theScientistMoves = {
+	ctor: '::',
+	_0: {
+		type_: _ebberg$bergd$Model$HercApp,
+		title: 'Herculean Appetites',
+		desc: _ebberg$bergd$Content$contentHercApp,
+		roll: {ctor: '[]'},
+		level: 1
+	},
+	_1: {
+		ctor: '::',
+		_0: {
+			type_: _ebberg$bergd$Model$TheUpperHand,
+			title: 'The Upper Hand',
+			desc: _ebberg$bergd$Content$contentTheUpperHand,
+			roll: {ctor: '[]'},
+			level: 1
+		},
+		_1: {
+			ctor: '::',
+			_0: {
+				type_: _ebberg$bergd$Model$Musclebound,
+				title: 'Musclebound',
+				desc: _ebberg$bergd$Content$contentMusclebound,
+				roll: {ctor: '[]'},
+				level: 1
+			},
+			_1: {
+				ctor: '::',
+				_0: {
+					type_: _ebberg$bergd$Model$WhatAreYouWaitingFor,
+					title: 'What Are You Waiting For?',
+					desc: _ebberg$bergd$Content$contentWhatAreYouWaitingFor,
+					roll: {
+						ctor: '::',
+						_0: _ebberg$bergd$Model$RollCon,
+						_1: {ctor: '[]'}
+					},
+					level: 1
+				},
+				_1: {
+					ctor: '::',
+					_0: {
+						type_: _ebberg$bergd$Model$FullPlatePackingSteel,
+						title: 'Full Plate and Packing Steel',
+						desc: _ebberg$bergd$Content$contentFullPlatePackingSteel,
+						roll: {ctor: '[]'},
+						level: 1
+					},
+					_1: {
+						ctor: '::',
+						_0: {
+							type_: _ebberg$bergd$Model$WideWanderer,
+							title: 'Wide-Wanderer',
+							desc: _ebberg$bergd$Content$contentWideWanderer,
+							roll: {ctor: '[]'},
+							level: 2
+						},
+						_1: {
+							ctor: '::',
+							_0: {
+								type_: _ebberg$bergd$Model$Samson,
+								title: 'Samson',
+								desc: _ebberg$bergd$Content$contentSamson,
+								roll: {ctor: '[]'},
+								level: 3
+							},
+							_1: {
+								ctor: '::',
+								_0: {
+									type_: _ebberg$bergd$Model$Smash,
+									title: 'Smash',
+									desc: _ebberg$bergd$Content$contentSmash,
+									roll: {ctor: '[]'},
+									level: 4
+								},
+								_1: {
+									ctor: '::',
+									_0: {
+										type_: _ebberg$bergd$Model$EyeForWeakness,
+										title: 'EyeForWeakness',
+										desc: _ebberg$bergd$Content$contentEyeForWeakness,
+										roll: {ctor: '[]'},
+										level: 5
+									},
+									_1: {ctor: '[]'}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+};
+var _ebberg$bergd$Model$theScientistMoveSet = {
+	ctor: '::',
+	_0: {title: 'The Scientist\'s Moves', moves: _ebberg$bergd$Model$theScientistMoves, id: 'ScientistMoves'},
+	_1: {ctor: '[]'}
+};
+var _ebberg$bergd$Model$RollInt = {ctor: 'RollInt'};
+var _ebberg$bergd$Model$thePilotMoves = {
+	ctor: '::',
+	_0: {
+		type_: _ebberg$bergd$Model$WizardCastSpell,
+		title: 'Cast a Spell',
+		desc: _ebberg$bergd$Content$contentWizardCastSpell,
+		roll: {ctor: '[]'},
+		level: 1
+	},
+	_1: {
+		ctor: '::',
+		_0: {
+			type_: _ebberg$bergd$Model$SpellDefense,
+			title: 'Spell Defense',
+			desc: _ebberg$bergd$Content$contentSpellDefense,
+			roll: {ctor: '[]'},
+			level: 1
+		},
+		_1: {
+			ctor: '::',
+			_0: {
+				type_: _ebberg$bergd$Model$Ritual,
+				title: 'Ritual',
+				desc: _ebberg$bergd$Content$contentRitual,
+				roll: {ctor: '[]'},
+				level: 1
+			},
+			_1: {
+				ctor: '::',
+				_0: {
+					type_: _ebberg$bergd$Model$Logical,
+					title: 'Logical',
+					desc: _ebberg$bergd$Content$contentLogical,
+					roll: {ctor: '[]'},
+					level: 2
+				},
+				_1: {
+					ctor: '::',
+					_0: {
+						type_: _ebberg$bergd$Model$FountOfKnowledge,
+						title: 'Fount of Knowledge',
+						desc: _ebberg$bergd$Content$contentFountOfKnowledge,
+						roll: {ctor: '[]'},
+						level: 3
+					},
+					_1: {
+						ctor: '::',
+						_0: {
+							type_: _ebberg$bergd$Model$Counterspell,
+							title: 'Counterspell',
+							desc: _ebberg$bergd$Content$contentCounterspell,
+							roll: {
+								ctor: '::',
+								_0: _ebberg$bergd$Model$RollInt,
+								_1: {ctor: '[]'}
+							},
+							level: 4
+						},
+						_1: {
+							ctor: '::',
+							_0: {
+								type_: _ebberg$bergd$Model$QuickStudy,
+								title: 'Quick Study',
+								desc: _ebberg$bergd$Content$contentQuickStudy,
+								roll: {ctor: '[]'},
+								level: 5
+							},
+							_1: {ctor: '[]'}
+						}
+					}
+				}
+			}
+		}
+	}
+};
+var _ebberg$bergd$Model$thePilotMoveSet = {
+	ctor: '::',
+	_0: {title: 'The Pilot\'s Moves', moves: _ebberg$bergd$Model$thePilotMoves, id: 'PilotMoves'},
+	_1: {ctor: '[]'}
+};
+var _ebberg$bergd$Model$theFirstMateSpellbookMoves = {
+	ctor: '::',
+	_0: {
+		type_: _ebberg$bergd$Model$SpellWizardLight,
+		title: 'Light',
+		desc: _ebberg$bergd$Content$contentSpellWizardLight,
+		roll: {
+			ctor: '::',
+			_0: _ebberg$bergd$Model$RollInt,
+			_1: {ctor: '[]'}
+		},
+		level: 2
+	},
+	_1: {
+		ctor: '::',
+		_0: {
+			type_: _ebberg$bergd$Model$SpellWizardUnseenServant,
+			title: 'Unseen Servant',
+			desc: _ebberg$bergd$Content$contentSpellWizardUnseenServant,
+			roll: {
+				ctor: '::',
+				_0: _ebberg$bergd$Model$RollInt,
+				_1: {ctor: '[]'}
+			},
+			level: 2
+		},
+		_1: {
+			ctor: '::',
+			_0: {
+				type_: _ebberg$bergd$Model$SpellWizardPrestidigitation,
+				title: 'Prestidigitation',
+				desc: _ebberg$bergd$Content$contentSpellWizardPrestidigitation,
+				roll: {
+					ctor: '::',
+					_0: _ebberg$bergd$Model$RollInt,
+					_1: {ctor: '[]'}
+				},
+				level: 2
+			},
+			_1: {
+				ctor: '::',
+				_0: {
+					type_: _ebberg$bergd$Model$SpellWizardMagicMissile,
+					title: 'Magic Missile',
+					desc: _ebberg$bergd$Content$contentSpellWizardAlarm,
+					roll: {
+						ctor: '::',
+						_0: _ebberg$bergd$Model$RollInt,
+						_1: {ctor: '[]'}
+					},
+					level: 2
+				},
+				_1: {
+					ctor: '::',
+					_0: {
+						type_: _ebberg$bergd$Model$SpellWizardInvisibility,
+						title: 'Invisibility',
+						desc: _ebberg$bergd$Content$contentSpellWizardInvisibility,
+						roll: {
+							ctor: '::',
+							_0: _ebberg$bergd$Model$RollInt,
+							_1: {ctor: '[]'}
+						},
+						level: 2
+					},
+					_1: {
+						ctor: '::',
+						_0: {
+							type_: _ebberg$bergd$Model$SpellWizardDetectMagic,
+							title: 'Detect Magic',
+							desc: _ebberg$bergd$Content$contentSpellWizardDetectMagic,
+							roll: {
+								ctor: '::',
+								_0: _ebberg$bergd$Model$RollInt,
+								_1: {ctor: '[]'}
+							},
+							level: 3
+						},
+						_1: {
+							ctor: '::',
+							_0: {
+								type_: _ebberg$bergd$Model$SpellWizardDispelMagic,
+								title: 'Dispel Magic',
+								desc: _ebberg$bergd$Content$contentSpellWizardDispelMagic,
+								roll: {
+									ctor: '::',
+									_0: _ebberg$bergd$Model$RollInt,
+									_1: {ctor: '[]'}
+								},
+								level: 4
+							},
+							_1: {
+								ctor: '::',
+								_0: {
+									type_: _ebberg$bergd$Model$SpellWizardFireball,
+									title: 'Fireball',
+									desc: _ebberg$bergd$Content$contentSpellWizardFireball,
+									roll: {
+										ctor: '::',
+										_0: _ebberg$bergd$Model$RollInt,
+										_1: {ctor: '[]'}
+									},
+									level: 5
+								},
+								_1: {ctor: '[]'}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+};
+var _ebberg$bergd$Model$thePilotSpellbookMoves = {
+	ctor: '::',
+	_0: {
+		type_: _ebberg$bergd$Model$SpellWizardLight,
+		title: 'Light',
+		desc: _ebberg$bergd$Content$contentSpellWizardLight,
+		roll: {
+			ctor: '::',
+			_0: _ebberg$bergd$Model$RollInt,
+			_1: {ctor: '[]'}
+		},
+		level: 0
+	},
+	_1: {
+		ctor: '::',
+		_0: {
+			type_: _ebberg$bergd$Model$SpellWizardUnseenServant,
+			title: 'Unseen Servant',
+			desc: _ebberg$bergd$Content$contentSpellWizardUnseenServant,
+			roll: {
+				ctor: '::',
+				_0: _ebberg$bergd$Model$RollInt,
+				_1: {ctor: '[]'}
+			},
+			level: 0
+		},
+		_1: {
+			ctor: '::',
+			_0: {
+				type_: _ebberg$bergd$Model$SpellWizardPrestidigitation,
+				title: 'Prestidigitation',
+				desc: _ebberg$bergd$Content$contentSpellWizardPrestidigitation,
+				roll: {
+					ctor: '::',
+					_0: _ebberg$bergd$Model$RollInt,
+					_1: {ctor: '[]'}
+				},
+				level: 0
+			},
+			_1: {
+				ctor: '::',
+				_0: {
+					type_: _ebberg$bergd$Model$SpellWizardContactSpirits,
+					title: 'Contact Spirits',
+					desc: _ebberg$bergd$Content$contentSpellWizardContactSpirits,
+					roll: {
+						ctor: '::',
+						_0: _ebberg$bergd$Model$RollInt,
+						_1: {ctor: '[]'}
+					},
+					level: 1
+				},
+				_1: {
+					ctor: '::',
+					_0: {
+						type_: _ebberg$bergd$Model$SpellWizardMagicMissile,
+						title: 'Magic Missile',
+						desc: _ebberg$bergd$Content$contentSpellWizardMagicMissile,
+						roll: {
+							ctor: '::',
+							_0: _ebberg$bergd$Model$RollInt,
+							_1: {ctor: '[]'}
+						},
+						level: 1
+					},
+					_1: {
+						ctor: '::',
+						_0: {
+							type_: _ebberg$bergd$Model$SpellWizardAlarm,
+							title: 'Alarm',
+							desc: _ebberg$bergd$Content$contentSpellWizardAlarm,
+							roll: {
+								ctor: '::',
+								_0: _ebberg$bergd$Model$RollInt,
+								_1: {ctor: '[]'}
+							},
+							level: 2
+						},
+						_1: {
+							ctor: '::',
+							_0: {
+								type_: _ebberg$bergd$Model$SpellWizardSleep,
+								title: 'Sleep',
+								desc: _ebberg$bergd$Content$contentSpellWizardSleep,
+								roll: {
+									ctor: '::',
+									_0: _ebberg$bergd$Model$RollInt,
+									_1: {ctor: '[]'}
+								},
+								level: 3
+							},
+							_1: {
+								ctor: '::',
+								_0: {
+									type_: _ebberg$bergd$Model$SpellWizardFireball,
+									title: 'Fireball',
+									desc: _ebberg$bergd$Content$contentSpellWizardFireball,
+									roll: {
+										ctor: '::',
+										_0: _ebberg$bergd$Model$RollInt,
+										_1: {ctor: '[]'}
+									},
+									level: 4
+								},
+								_1: {
+									ctor: '::',
+									_0: {
+										type_: _ebberg$bergd$Model$SpellWizardPolymorph,
+										title: 'Polymorph',
+										desc: _ebberg$bergd$Content$contentSpellWizardPolymorph,
+										roll: {
+											ctor: '::',
+											_0: _ebberg$bergd$Model$RollInt,
+											_1: {ctor: '[]'}
+										},
+										level: 5
+									},
+									_1: {ctor: '[]'}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+};
+var _ebberg$bergd$Model$thePilotSpellbookMoveSet = {
+	ctor: '::',
+	_0: {title: 'The Pilot\'s Spellbook', moves: _ebberg$bergd$Model$thePilotSpellbookMoves, id: 'PilotSpellbook'},
+	_1: {ctor: '[]'}
+};
+var _ebberg$bergd$Model$theSmugglerSpellbookMoves = {
+	ctor: '::',
+	_0: {
+		type_: _ebberg$bergd$Model$SpellWizardLight,
+		title: 'Light',
+		desc: _ebberg$bergd$Content$contentSpellWizardLight,
+		roll: {
+			ctor: '::',
+			_0: _ebberg$bergd$Model$RollInt,
+			_1: {ctor: '[]'}
+		},
+		level: 0
+	},
+	_1: {
+		ctor: '::',
+		_0: {
+			type_: _ebberg$bergd$Model$SpellWizardUnseenServant,
+			title: 'Unseen Servant',
+			desc: _ebberg$bergd$Content$contentSpellWizardUnseenServant,
+			roll: {
+				ctor: '::',
+				_0: _ebberg$bergd$Model$RollInt,
+				_1: {ctor: '[]'}
+			},
+			level: 0
+		},
+		_1: {
+			ctor: '::',
+			_0: {
+				type_: _ebberg$bergd$Model$SpellWizardPrestidigitation,
+				title: 'Prestidigitation',
+				desc: _ebberg$bergd$Content$contentSpellWizardPrestidigitation,
+				roll: {
+					ctor: '::',
+					_0: _ebberg$bergd$Model$RollInt,
+					_1: {ctor: '[]'}
+				},
+				level: 0
+			},
+			_1: {
+				ctor: '::',
+				_0: {
+					type_: _ebberg$bergd$Model$SpellWizardDetectMagic,
+					title: 'Detect Magic',
+					desc: _ebberg$bergd$Content$contentSpellWizardDetectMagic,
+					roll: {
+						ctor: '::',
+						_0: _ebberg$bergd$Model$RollInt,
+						_1: {ctor: '[]'}
+					},
+					level: 0
+				},
+				_1: {
+					ctor: '::',
+					_0: {
+						type_: _ebberg$bergd$Model$SpellWizardCharmPerson,
+						title: 'Charm Person',
+						desc: _ebberg$bergd$Content$contentSpellWizardCharmPerson,
+						roll: {
+							ctor: '::',
+							_0: _ebberg$bergd$Model$RollInt,
+							_1: {ctor: '[]'}
+						},
+						level: 1
+					},
+					_1: {
+						ctor: '::',
+						_0: {
+							type_: _ebberg$bergd$Model$SpellWizardInvisibility,
+							title: 'Invisibility',
+							desc: _ebberg$bergd$Content$contentSpellWizardInvisibility,
+							roll: {
+								ctor: '::',
+								_0: _ebberg$bergd$Model$RollInt,
+								_1: {ctor: '[]'}
+							},
+							level: 1
+						},
+						_1: {ctor: '[]'}
+					}
+				}
+			}
+		}
+	}
+};
+var _ebberg$bergd$Model$theSmugglerSpellbookMoveSet = {
+	ctor: '::',
+	_0: {title: 'The Smuggler\'s Spellbook', moves: _ebberg$bergd$Model$theSmugglerSpellbookMoves, id: 'SmugglerSpellbook'},
+	_1: {ctor: '[]'}
+};
+var _ebberg$bergd$Model$RollWis = {ctor: 'RollWis'};
+var _ebberg$bergd$Model$explorationMoves = {
+	ctor: '::',
+	_0: {
+		type_: _ebberg$bergd$Model$SpoutLore,
+		title: 'Spout Lore',
+		desc: _ebberg$bergd$Content$contentSpoutLore,
+		roll: {
+			ctor: '::',
+			_0: _ebberg$bergd$Model$RollInt,
+			_1: {ctor: '[]'}
+		},
+		level: 1
+	},
+	_1: {
+		ctor: '::',
+		_0: {
+			type_: _ebberg$bergd$Model$DiscernRealities,
+			title: 'Discern Realities',
+			desc: _ebberg$bergd$Content$contentDiscernRealities,
+			roll: {
+				ctor: '::',
+				_0: _ebberg$bergd$Model$RollWis,
+				_1: {ctor: '[]'}
+			},
+			level: 1
+		},
+		_1: {ctor: '[]'}
+	}
+};
+var _ebberg$bergd$Model$theCaptainSpellbookMoves = {
+	ctor: '::',
+	_0: {
+		type_: _ebberg$bergd$Model$SpellClericLight,
+		title: 'Light',
+		desc: _ebberg$bergd$Content$contentSpellClericLight,
+		roll: {
+			ctor: '::',
+			_0: _ebberg$bergd$Model$RollWis,
+			_1: {ctor: '[]'}
+		},
+		level: 2
+	},
+	_1: {
+		ctor: '::',
+		_0: {
+			type_: _ebberg$bergd$Model$SpellClericSanctify,
+			title: 'Sanctify',
+			desc: _ebberg$bergd$Content$contentSpellClericSanctify,
+			roll: {
+				ctor: '::',
+				_0: _ebberg$bergd$Model$RollWis,
+				_1: {ctor: '[]'}
+			},
+			level: 2
+		},
+		_1: {
+			ctor: '::',
+			_0: {
+				type_: _ebberg$bergd$Model$SpellClericGuidance,
+				title: 'Guidance',
+				desc: _ebberg$bergd$Content$contentSpellClericGuidance,
+				roll: {
+					ctor: '::',
+					_0: _ebberg$bergd$Model$RollWis,
+					_1: {ctor: '[]'}
+				},
+				level: 2
+			},
+			_1: {
+				ctor: '::',
+				_0: {
+					type_: _ebberg$bergd$Model$SpellClericMagicWeapon,
+					title: 'Magic Weapon',
+					desc: _ebberg$bergd$Content$contentSpellClericMagicWeapon,
+					roll: {
+						ctor: '::',
+						_0: _ebberg$bergd$Model$RollWis,
+						_1: {ctor: '[]'}
+					},
+					level: 2
+				},
+				_1: {
+					ctor: '::',
+					_0: {
+						type_: _ebberg$bergd$Model$SpellClericSanctuary,
+						title: 'Sanctuary',
+						desc: _ebberg$bergd$Content$contentSpellClericSanctuary,
+						roll: {
+							ctor: '::',
+							_0: _ebberg$bergd$Model$RollWis,
+							_1: {ctor: '[]'}
+						},
+						level: 2
+					},
+					_1: {
+						ctor: '::',
+						_0: {
+							type_: _ebberg$bergd$Model$SpellClericSpeakWithDead,
+							title: 'Speak With Dead',
+							desc: _ebberg$bergd$Content$contentSpellClericSpeakWithDead,
+							roll: {
+								ctor: '::',
+								_0: _ebberg$bergd$Model$RollWis,
+								_1: {ctor: '[]'}
+							},
+							level: 3
+						},
+						_1: {
+							ctor: '::',
+							_0: {
+								type_: _ebberg$bergd$Model$SpellClericCureModerateWounds,
+								title: 'Cure Moderate Wounds',
+								desc: _ebberg$bergd$Content$contentSpellClericCureModerateWounds,
+								roll: {
+									ctor: '::',
+									_0: _ebberg$bergd$Model$RollWis,
+									_1: {ctor: '[]'}
+								},
+								level: 4
+							},
+							_1: {
+								ctor: '::',
+								_0: {
+									type_: _ebberg$bergd$Model$SpellClericHoldPerson,
+									title: 'Hold Person',
+									desc: _ebberg$bergd$Content$contentSpellClericHoldPerson,
+									roll: {
+										ctor: '::',
+										_0: _ebberg$bergd$Model$RollWis,
+										_1: {ctor: '[]'}
+									},
+									level: 5
+								},
+								_1: {ctor: '[]'}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+};
+var _ebberg$bergd$Model$theNavigatorSpellbookMoves = {
+	ctor: '::',
+	_0: {
+		type_: _ebberg$bergd$Model$SpellClericLight,
+		title: 'Light',
+		desc: _ebberg$bergd$Content$contentSpellClericLight,
+		roll: {
+			ctor: '::',
+			_0: _ebberg$bergd$Model$RollWis,
+			_1: {ctor: '[]'}
+		},
+		level: 2
+	},
+	_1: {
+		ctor: '::',
+		_0: {
+			type_: _ebberg$bergd$Model$SpellClericSanctify,
+			title: 'Sanctify',
+			desc: _ebberg$bergd$Content$contentSpellClericSanctify,
+			roll: {
+				ctor: '::',
+				_0: _ebberg$bergd$Model$RollWis,
+				_1: {ctor: '[]'}
+			},
+			level: 2
+		},
+		_1: {
+			ctor: '::',
+			_0: {
+				type_: _ebberg$bergd$Model$SpellClericGuidance,
+				title: 'Guidance',
+				desc: _ebberg$bergd$Content$contentSpellClericGuidance,
+				roll: {
+					ctor: '::',
+					_0: _ebberg$bergd$Model$RollWis,
+					_1: {ctor: '[]'}
+				},
+				level: 2
+			},
+			_1: {
+				ctor: '::',
+				_0: {
+					type_: _ebberg$bergd$Model$SpellClericCureLightWounds,
+					title: 'Cure Light Wounds',
+					desc: _ebberg$bergd$Content$contentSpellClericCureLightWounds,
+					roll: {
+						ctor: '::',
+						_0: _ebberg$bergd$Model$RollWis,
+						_1: {ctor: '[]'}
+					},
+					level: 2
+				},
+				_1: {
+					ctor: '::',
+					_0: {
+						type_: _ebberg$bergd$Model$SpellClericCauseFear,
+						title: 'Cause Fear',
+						desc: _ebberg$bergd$Content$contentSpellClericCauseFear,
+						roll: {
+							ctor: '::',
+							_0: _ebberg$bergd$Model$RollWis,
+							_1: {ctor: '[]'}
+						},
+						level: 2
+					},
+					_1: {
+						ctor: '::',
+						_0: {
+							type_: _ebberg$bergd$Model$SpellClericMagicWeapon,
+							title: 'Magic Weapon',
+							desc: _ebberg$bergd$Content$contentSpellClericMagicWeapon,
+							roll: {
+								ctor: '::',
+								_0: _ebberg$bergd$Model$RollWis,
+								_1: {ctor: '[]'}
+							},
+							level: 3
+						},
+						_1: {
+							ctor: '::',
+							_0: {
+								type_: _ebberg$bergd$Model$SpellClericAnimateDead,
+								title: 'Animate Dead',
+								desc: _ebberg$bergd$Content$contentSpellClericAnimateDead,
+								roll: {
+									ctor: '::',
+									_0: _ebberg$bergd$Model$RollWis,
+									_1: {ctor: '[]'}
+								},
+								level: 4
+							},
+							_1: {
+								ctor: '::',
+								_0: {
+									type_: _ebberg$bergd$Model$SpellClericDarkness,
+									title: 'Darkness',
+									desc: _ebberg$bergd$Content$contentSpellClericDarkness,
+									roll: {
+										ctor: '::',
+										_0: _ebberg$bergd$Model$RollWis,
+										_1: {ctor: '[]'}
+									},
+									level: 5
+								},
+								_1: {ctor: '[]'}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+};
+var _ebberg$bergd$Model$theBiomechanicSpellbookMoves = {
+	ctor: '::',
+	_0: {
+		type_: _ebberg$bergd$Model$SpellClericLight,
+		title: 'Light',
+		desc: _ebberg$bergd$Content$contentSpellClericLight,
+		roll: {
+			ctor: '::',
+			_0: _ebberg$bergd$Model$RollWis,
+			_1: {ctor: '[]'}
+		},
+		level: 0
+	},
+	_1: {
+		ctor: '::',
+		_0: {
+			type_: _ebberg$bergd$Model$SpellClericSanctify,
+			title: 'Sanctify',
+			desc: _ebberg$bergd$Content$contentSpellClericSanctify,
+			roll: {
+				ctor: '::',
+				_0: _ebberg$bergd$Model$RollWis,
+				_1: {ctor: '[]'}
+			},
+			level: 0
+		},
+		_1: {
+			ctor: '::',
+			_0: {
+				type_: _ebberg$bergd$Model$SpellClericGuidance,
+				title: 'Guidance',
+				desc: _ebberg$bergd$Content$contentSpellClericGuidance,
+				roll: {
+					ctor: '::',
+					_0: _ebberg$bergd$Model$RollWis,
+					_1: {ctor: '[]'}
+				},
+				level: 0
+			},
+			_1: {
+				ctor: '::',
+				_0: {
+					type_: _ebberg$bergd$Model$SpellClericCureLightWounds,
+					title: 'Cure Light Wounds',
+					desc: _ebberg$bergd$Content$contentSpellClericCureLightWounds,
+					roll: {
+						ctor: '::',
+						_0: _ebberg$bergd$Model$RollWis,
+						_1: {ctor: '[]'}
+					},
+					level: 1
+				},
+				_1: {
+					ctor: '::',
+					_0: {
+						type_: _ebberg$bergd$Model$SpellClericSpeakWithDead,
+						title: 'Speak With Dead',
+						desc: _ebberg$bergd$Content$contentSpellClericSpeakWithDead,
+						roll: {
+							ctor: '::',
+							_0: _ebberg$bergd$Model$RollWis,
+							_1: {ctor: '[]'}
+						},
+						level: 1
+					},
+					_1: {
+						ctor: '::',
+						_0: {
+							type_: _ebberg$bergd$Model$SpellClericBless,
+							title: 'Bless',
+							desc: _ebberg$bergd$Content$contentSpellClericBless,
+							roll: {
+								ctor: '::',
+								_0: _ebberg$bergd$Model$RollWis,
+								_1: {ctor: '[]'}
+							},
+							level: 2
+						},
+						_1: {
+							ctor: '::',
+							_0: {
+								type_: _ebberg$bergd$Model$SpellClericRes,
+								title: 'Res',
+								desc: _ebberg$bergd$Content$contentSpellClericRes,
+								roll: {
+									ctor: '::',
+									_0: _ebberg$bergd$Model$RollWis,
+									_1: {ctor: '[]'}
+								},
+								level: 3
+							},
+							_1: {
+								ctor: '::',
+								_0: {
+									type_: _ebberg$bergd$Model$SpellClericCureModerateWounds,
+									title: 'Cure Moderate Wounds',
+									desc: _ebberg$bergd$Content$contentSpellClericCureModerateWounds,
+									roll: {
+										ctor: '::',
+										_0: _ebberg$bergd$Model$RollWis,
+										_1: {ctor: '[]'}
+									},
+									level: 4
+								},
+								_1: {
+									ctor: '::',
+									_0: {
+										type_: _ebberg$bergd$Model$SpellClericTrueSeeing,
+										title: 'True Seeing',
+										desc: _ebberg$bergd$Content$contentSpellClericTrueSeeing,
+										roll: {
+											ctor: '::',
+											_0: _ebberg$bergd$Model$RollWis,
+											_1: {ctor: '[]'}
+										},
+										level: 5
+									},
+									_1: {ctor: '[]'}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+};
+var _ebberg$bergd$Model$theBiomechanicSpellbookMoveSet = {
+	ctor: '::',
+	_0: {title: 'The Biomechanic\'s Spellbook', moves: _ebberg$bergd$Model$theBiomechanicSpellbookMoves, id: 'BiomechanicSpellbook'},
+	_1: {ctor: '[]'}
+};
+var _ebberg$bergd$Model$theBiomechanicMoves = {
+	ctor: '::',
+	_0: {
+		type_: _ebberg$bergd$Model$Deity,
+		title: 'Deity',
+		desc: _ebberg$bergd$Content$contentDeity,
+		roll: {ctor: '[]'},
+		level: 1
+	},
+	_1: {
+		ctor: '::',
+		_0: {
+			type_: _ebberg$bergd$Model$DivineGuidance,
+			title: 'Divine Guidance',
+			desc: _ebberg$bergd$Content$contentDivineGuidance,
+			roll: {ctor: '[]'},
+			level: 1
+		},
+		_1: {
+			ctor: '::',
+			_0: {
+				type_: _ebberg$bergd$Model$TurnUndead,
+				title: 'Turn Undead',
+				desc: _ebberg$bergd$Content$contentTurnUndead,
+				roll: {
+					ctor: '::',
+					_0: _ebberg$bergd$Model$RollWis,
+					_1: {ctor: '[]'}
+				},
+				level: 1
+			},
+			_1: {
+				ctor: '::',
+				_0: {
+					type_: _ebberg$bergd$Model$ClericCastSpell,
+					title: 'Cast Spell',
+					desc: _ebberg$bergd$Content$contentClericCastSpell,
+					roll: {ctor: '[]'},
+					level: 1
+				},
+				_1: {
+					ctor: '::',
+					_0: {
+						type_: _ebberg$bergd$Model$Serenity,
+						title: 'Serenity',
+						desc: _ebberg$bergd$Content$contentSerenity,
+						roll: {ctor: '[]'},
+						level: 2
+					},
+					_1: {
+						ctor: '::',
+						_0: {
+							type_: _ebberg$bergd$Model$DivineIntervention,
+							title: 'Divine Intervention',
+							desc: _ebberg$bergd$Content$contentDivineIntervention,
+							roll: {ctor: '[]'},
+							level: 3
+						},
+						_1: {
+							ctor: '::',
+							_0: {
+								type_: _ebberg$bergd$Model$DevotedHealer,
+								title: 'Devoted Healer',
+								desc: _ebberg$bergd$Content$contentDevotedHealer,
+								roll: {
+									ctor: '::',
+									_0: _ebberg$bergd$Model$RollWis,
+									_1: {ctor: '[]'}
+								},
+								level: 4
+							},
+							_1: {
+								ctor: '::',
+								_0: {
+									type_: _ebberg$bergd$Model$OrisonForGuidance,
+									title: 'Orison For Guidance',
+									desc: _ebberg$bergd$Content$contentOrisonForGuidance,
+									roll: {
+										ctor: '::',
+										_0: _ebberg$bergd$Model$RollWis,
+										_1: {ctor: '[]'}
+									},
+									level: 5
+								},
+								_1: {ctor: '[]'}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+};
+var _ebberg$bergd$Model$theBiomechanicMoveSet = {
+	ctor: '::',
+	_0: {title: 'The Biomechanic\'s Moves', moves: _ebberg$bergd$Model$theBiomechanicMoves, id: 'BiomechanicMoves'},
+	_1: {ctor: '[]'}
+};
+var _ebberg$bergd$Model$theNavigatorMoves = {
+	ctor: '::',
+	_0: {
+		type_: _ebberg$bergd$Model$HuntAndTrack,
+		title: 'Hunt And Track',
+		desc: _ebberg$bergd$Content$contentHuntAndTrack,
+		roll: {
+			ctor: '::',
+			_0: _ebberg$bergd$Model$RollWis,
+			_1: {ctor: '[]'}
+		},
+		level: 1
+	},
+	_1: {
+		ctor: '::',
+		_0: {
+			type_: _ebberg$bergd$Model$CalledShot,
+			title: 'Called Shot',
+			desc: _ebberg$bergd$Content$contentCalledShot,
+			roll: {
+				ctor: '::',
+				_0: _ebberg$bergd$Model$RollDex,
+				_1: {ctor: '[]'}
+			},
+			level: 1
+		},
+		_1: {
+			ctor: '::',
+			_0: {
+				type_: _ebberg$bergd$Model$AnimalCompanion,
+				title: 'Animal Companion',
+				desc: _ebberg$bergd$Content$contentAnimalCompanion,
+				roll: {ctor: '[]'},
+				level: 1
+			},
+			_1: {
+				ctor: '::',
+				_0: {
+					type_: _ebberg$bergd$Model$GodAmidstTheWastes,
+					title: 'God Amidst the Wastes',
+					desc: _ebberg$bergd$Content$contentGodAmidstTheWastes,
+					roll: {ctor: '[]'},
+					level: 2
+				},
+				_1: {
+					ctor: '::',
+					_0: {
+						type_: _ebberg$bergd$Model$FamiliarPrey,
+						title: 'Familiar Prey',
+						desc: _ebberg$bergd$Content$contentFamiliarPrey,
+						roll: {ctor: '[]'},
+						level: 3
+					},
+					_1: {
+						ctor: '::',
+						_0: {
+							type_: _ebberg$bergd$Model$WildEmpathy,
+							title: 'Wild Empathy',
+							desc: _ebberg$bergd$Content$contentWildEmpathy,
+							roll: {ctor: '[]'},
+							level: 4
+						},
+						_1: {
+							ctor: '::',
+							_0: {
+								type_: _ebberg$bergd$Model$BlotOutTheSun,
+								title: 'Blot Out The Sun',
+								desc: _ebberg$bergd$Content$contentBlotOutTheSun,
+								roll: {ctor: '[]'},
+								level: 5
+							},
+							_1: {ctor: '[]'}
+						}
+					}
+				}
+			}
+		}
+	}
+};
+var _ebberg$bergd$Model$theNavigatorMoveSet = {
+	ctor: '::',
+	_0: {title: 'The Navigation Officer\'s Moves', moves: _ebberg$bergd$Model$theNavigatorMoves, id: 'NavigatorMoves'},
+	_1: {
+		ctor: '::',
+		_0: {title: 'The Navigation Officer\'s Spellbook', moves: _ebberg$bergd$Model$theNavigatorSpellbookMoves, id: 'NavigatorSpellbookMoves'},
+		_1: {ctor: '[]'}
+	}
+};
+var _ebberg$bergd$Model$theEngineerMoves = {
+	ctor: '::',
+	_0: {
+		type_: _ebberg$bergd$Model$BornOfTheSoil,
+		title: 'Born of the Soil',
+		desc: _ebberg$bergd$Content$contentBornOfTheSoil,
+		roll: {ctor: '[]'},
+		level: 1
+	},
+	_1: {
+		ctor: '::',
+		_0: {
+			type_: _ebberg$bergd$Model$ByNatureSustained,
+			title: 'By Nature Sustained',
+			desc: _ebberg$bergd$Content$contentByNatureSustained,
+			roll: {ctor: '[]'},
+			level: 1
+		},
+		_1: {
+			ctor: '::',
+			_0: {
+				type_: _ebberg$bergd$Model$SpiritTongue,
+				title: 'Spirit Tongue',
+				desc: _ebberg$bergd$Content$contentSpiritTongue,
+				roll: {ctor: '[]'},
+				level: 1
+			},
+			_1: {
+				ctor: '::',
+				_0: {
+					type_: _ebberg$bergd$Model$Shapeshifter,
+					title: 'Shapeshifter',
+					desc: _ebberg$bergd$Content$contentShapeshifter,
+					roll: {
+						ctor: '::',
+						_0: _ebberg$bergd$Model$RollWis,
+						_1: {ctor: '[]'}
+					},
+					level: 1
+				},
+				_1: {
+					ctor: '::',
+					_0: {
+						type_: _ebberg$bergd$Model$StudiedEssence,
+						title: 'Studied Essence',
+						desc: _ebberg$bergd$Content$contentStudiedEssence,
+						roll: {ctor: '[]'},
+						level: 1
+					},
+					_1: {
+						ctor: '::',
+						_0: {
+							type_: _ebberg$bergd$Model$ThingTalker,
+							title: 'Thing-Talker',
+							desc: _ebberg$bergd$Content$contentThingTalker,
+							roll: {ctor: '[]'},
+							level: 2
+						},
+						_1: {
+							ctor: '::',
+							_0: {
+								type_: _ebberg$bergd$Model$CommunionOfWhispers,
+								title: 'Communion of Whispers',
+								desc: _ebberg$bergd$Content$contentCommunionOfWhispers,
+								roll: {ctor: '[]'},
+								level: 3
+							},
+							_1: {
+								ctor: '::',
+								_0: {
+									type_: _ebberg$bergd$Model$RedOfToothAndClaw,
+									title: 'Red of Tooth and Claw',
+									desc: _ebberg$bergd$Content$contentRedOfToothAndClaw,
+									roll: {ctor: '[]'},
+									level: 4
+								},
+								_1: {
+									ctor: '::',
+									_0: {
+										type_: _ebberg$bergd$Model$ElementalMastery,
+										title: 'Elemental Mastery',
+										desc: _ebberg$bergd$Content$contentElementalMastery,
+										roll: {ctor: '[]'},
+										level: 5
+									},
+									_1: {ctor: '[]'}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+};
+var _ebberg$bergd$Model$theEngineerMoveSet = {
+	ctor: '::',
+	_0: {title: 'The Engineering Officer\'s Moves', moves: _ebberg$bergd$Model$theEngineerMoves, id: 'EngineerMoves'},
+	_1: {ctor: '[]'}
+};
+var _ebberg$bergd$Model$RollCha = {ctor: 'RollCha'};
+var _ebberg$bergd$Model$theCaptainMoves = {
+	ctor: '::',
+	_0: {
+		type_: _ebberg$bergd$Model$LayOnHands,
+		title: 'Lay On Hands',
+		desc: _ebberg$bergd$Content$contentLayOnHands,
+		roll: {
+			ctor: '::',
+			_0: _ebberg$bergd$Model$RollCha,
+			_1: {ctor: '[]'}
+		},
+		level: 1
+	},
+	_1: {
+		ctor: '::',
+		_0: {
+			type_: _ebberg$bergd$Model$Armored,
+			title: 'Armored',
+			desc: _ebberg$bergd$Content$contentArmored,
+			roll: {ctor: '[]'},
+			level: 1
+		},
+		_1: {
+			ctor: '::',
+			_0: {
+				type_: _ebberg$bergd$Model$Law,
+				title: 'I Am The Law',
+				desc: _ebberg$bergd$Content$contentLaw,
+				roll: {
+					ctor: '::',
+					_0: _ebberg$bergd$Model$RollCha,
+					_1: {ctor: '[]'}
+				},
+				level: 1
+			},
+			_1: {
+				ctor: '::',
+				_0: {
+					type_: _ebberg$bergd$Model$Quest,
+					title: 'Quest',
+					desc: _ebberg$bergd$Content$contentQuest,
+					roll: {ctor: '[]'},
+					level: 1
+				},
+				_1: {
+					ctor: '::',
+					_0: {
+						type_: _ebberg$bergd$Model$DivineFavor,
+						title: 'Divine Favor',
+						desc: _ebberg$bergd$Content$contentDivineFavor,
+						roll: {ctor: '[]'},
+						level: 2
+					},
+					_1: {
+						ctor: '::',
+						_0: {
+							type_: _ebberg$bergd$Model$BloodyAegis,
+							title: 'Bloody Aegis',
+							desc: _ebberg$bergd$Content$contentBloodyAegis,
+							roll: {ctor: '[]'},
+							level: 3
+						},
+						_1: {
+							ctor: '::',
+							_0: {
+								type_: _ebberg$bergd$Model$Hospitaller,
+								title: 'Hospitaller',
+								desc: _ebberg$bergd$Content$contentHospitaller,
+								roll: {ctor: '[]'},
+								level: 4
+							},
+							_1: {
+								ctor: '::',
+								_0: {
+									type_: _ebberg$bergd$Model$Exterminus,
+									title: 'Exterminus',
+									desc: _ebberg$bergd$Content$contentExterminus,
+									roll: {ctor: '[]'},
+									level: 5
+								},
+								_1: {ctor: '[]'}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+};
+var _ebberg$bergd$Model$theCaptainMoveSet = {
+	ctor: '::',
+	_0: {title: 'The Captain\'s Moves', moves: _ebberg$bergd$Model$theCaptainMoves, id: 'CaptainMoves'},
+	_1: {
+		ctor: '::',
+		_0: {title: 'The Captain\'s Spellbook', moves: _ebberg$bergd$Model$theCaptainSpellbookMoves, id: 'CaptainSpellbookMoves'},
+		_1: {ctor: '[]'}
+	}
+};
+var _ebberg$bergd$Model$theFirstMateMoves = {
+	ctor: '::',
+	_0: {
+		type_: _ebberg$bergd$Model$ArcaneArt,
+		title: 'Arcane Art',
+		desc: _ebberg$bergd$Content$contentArcaneArt,
+		roll: {
+			ctor: '::',
+			_0: _ebberg$bergd$Model$RollCha,
+			_1: {ctor: '[]'}
+		},
+		level: 1
+	},
+	_1: {
+		ctor: '::',
+		_0: {
+			type_: _ebberg$bergd$Model$LoreExpert,
+			title: 'Bardic Lore',
+			desc: _ebberg$bergd$Content$contentLoreExpert,
+			roll: {ctor: '[]'},
+			level: 1
+		},
+		_1: {
+			ctor: '::',
+			_0: {
+				type_: _ebberg$bergd$Model$CharmingOpen,
+				title: 'Charming and Open',
+				desc: _ebberg$bergd$Content$contentCharmingOpen,
+				roll: {ctor: '[]'},
+				level: 1
+			},
+			_1: {
+				ctor: '::',
+				_0: {
+					type_: _ebberg$bergd$Model$PortStorm,
+					title: 'A Port in the Storm',
+					desc: _ebberg$bergd$Content$contentPortStorm,
+					roll: {ctor: '[]'},
+					level: 1
+				},
+				_1: {
+					ctor: '::',
+					_0: {
+						type_: _ebberg$bergd$Model$MulticlassDabbler,
+						title: 'Multiclass Dabbler',
+						desc: _ebberg$bergd$Content$contentMulticlassDabbler,
+						roll: {ctor: '[]'},
+						level: 2
+					},
+					_1: {
+						ctor: '::',
+						_0: {
+							type_: _ebberg$bergd$Model$EldritchTones,
+							title: 'Eldritch Tones',
+							desc: _ebberg$bergd$Content$contentEldritchTones,
+							roll: {ctor: '[]'},
+							level: 3
+						},
+						_1: {
+							ctor: '::',
+							_0: {
+								type_: _ebberg$bergd$Model$ViciousCacophony,
+								title: 'Vicious Cacophony',
+								desc: _ebberg$bergd$Content$contentViciousCacophony,
+								roll: {ctor: '[]'},
+								level: 4
+							},
+							_1: {
+								ctor: '::',
+								_0: {
+									type_: _ebberg$bergd$Model$HealingSong,
+									title: 'Healing Song',
+									desc: _ebberg$bergd$Content$contentHealingSong,
+									roll: {ctor: '[]'},
+									level: 5
+								},
+								_1: {ctor: '[]'}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+};
+var _ebberg$bergd$Model$theFirstMateMoveSet = {
+	ctor: '::',
+	_0: {title: 'The First Mate\'s Moves', moves: _ebberg$bergd$Model$theFirstMateMoves, id: 'FirstMateMoves'},
+	_1: {
+		ctor: '::',
+		_0: {title: 'The First Mate\'s Spellbook', moves: _ebberg$bergd$Model$theFirstMateSpellbookMoves, id: 'FirstMateSpellbookMoves'},
+		_1: {ctor: '[]'}
+	}
+};
+var _ebberg$bergd$Model$combatMoves = {
+	ctor: '::',
+	_0: {
+		type_: _ebberg$bergd$Model$HackSlash,
+		title: 'Hack and Slash',
+		desc: _ebberg$bergd$Content$contentHackSlash,
+		roll: {
+			ctor: '::',
+			_0: _ebberg$bergd$Model$RollStr,
+			_1: {ctor: '[]'}
+		},
+		level: 1
+	},
+	_1: {
+		ctor: '::',
+		_0: {
+			type_: _ebberg$bergd$Model$Volley,
+			title: 'Volley',
+			desc: _ebberg$bergd$Content$contentVolley,
+			roll: {
+				ctor: '::',
+				_0: _ebberg$bergd$Model$RollDex,
+				_1: {ctor: '[]'}
+			},
+			level: 1
+		},
+		_1: {
+			ctor: '::',
+			_0: {
+				type_: _ebberg$bergd$Model$Defend,
+				title: 'Defend',
+				desc: _ebberg$bergd$Content$contentDefend,
+				roll: {
+					ctor: '::',
+					_0: _ebberg$bergd$Model$RollCon,
+					_1: {ctor: '[]'}
+				},
+				level: 1
+			},
+			_1: {
+				ctor: '::',
+				_0: {
+					type_: _ebberg$bergd$Model$Parley,
+					title: 'Parley',
+					desc: _ebberg$bergd$Content$contentParley,
+					roll: {
+						ctor: '::',
+						_0: _ebberg$bergd$Model$RollCha,
+						_1: {ctor: '[]'}
+					},
+					level: 1
+				},
+				_1: {ctor: '[]'}
+			}
+		}
+	}
+};
+var _ebberg$bergd$Model$defyDangerMoves = {
+	ctor: '::',
+	_0: {
+		type_: _ebberg$bergd$Model$DefyDanger,
+		title: 'Defy Danger',
+		desc: _ebberg$bergd$Content$contentDefyDanger,
+		roll: {
+			ctor: '::',
+			_0: A2(_ebberg$bergd$Model$RollReason, _ebberg$bergd$Model$strDefyDanger, _ebberg$bergd$Model$RollStr),
+			_1: {
+				ctor: '::',
+				_0: A2(_ebberg$bergd$Model$RollReason, _ebberg$bergd$Model$dexDefyDanger, _ebberg$bergd$Model$RollDex),
+				_1: {
+					ctor: '::',
+					_0: A2(_ebberg$bergd$Model$RollReason, _ebberg$bergd$Model$conDefyDanger, _ebberg$bergd$Model$RollCon),
+					_1: {
+						ctor: '::',
+						_0: A2(_ebberg$bergd$Model$RollReason, _ebberg$bergd$Model$intDefyDanger, _ebberg$bergd$Model$RollInt),
+						_1: {
+							ctor: '::',
+							_0: A2(_ebberg$bergd$Model$RollReason, _ebberg$bergd$Model$wisDefyDanger, _ebberg$bergd$Model$RollWis),
+							_1: {
+								ctor: '::',
+								_0: A2(_ebberg$bergd$Model$RollReason, _ebberg$bergd$Model$chaDefyDanger, _ebberg$bergd$Model$RollCha),
+								_1: {ctor: '[]'}
+							}
+						}
+					}
+				}
+			}
+		},
+		level: 1
+	},
+	_1: {ctor: '[]'}
+};
+var _ebberg$bergd$Model$basicMoveSet = {
+	ctor: '::',
+	_0: {title: 'Exploration Moves', moves: _ebberg$bergd$Model$explorationMoves, id: 'ExplorationMoves'},
+	_1: {
+		ctor: '::',
+		_0: {title: 'Defy Danger', moves: _ebberg$bergd$Model$defyDangerMoves, id: 'DefyDanger'},
+		_1: {
+			ctor: '::',
+			_0: {title: 'Combat Moves', moves: _ebberg$bergd$Model$combatMoves, id: 'CombatMoves'},
+			_1: {ctor: '[]'}
+		}
+	}
+};
+var _ebberg$bergd$Model$theSecurityMoves = {
+	ctor: '::',
+	_0: {
+		type_: _ebberg$bergd$Model$BendBarsLiftGates,
+		title: 'Bend Bars, Lift Gates',
+		desc: _ebberg$bergd$Content$contentBendBarsLiftGates,
+		roll: {
+			ctor: '::',
+			_0: _ebberg$bergd$Model$RollStr,
+			_1: {ctor: '[]'}
+		},
+		level: 1
+	},
+	_1: {
+		ctor: '::',
+		_0: {
+			type_: _ebberg$bergd$Model$Armored,
+			title: 'Armored',
+			desc: _ebberg$bergd$Content$contentArmored,
+			roll: {ctor: '[]'},
+			level: 1
+		},
+		_1: {
+			ctor: '::',
+			_0: {
+				type_: _ebberg$bergd$Model$SignatureWeapon,
+				title: 'Signature Weapon',
+				desc: _ebberg$bergd$Content$contentSignatureWeapon,
+				roll: {ctor: '[]'},
+				level: 1
+			},
+			_1: {
+				ctor: '::',
+				_0: {
+					type_: _ebberg$bergd$Model$Merciless,
+					title: 'Merciless',
+					desc: _ebberg$bergd$Content$contentMerciless,
+					roll: {ctor: '[]'},
+					level: 2
+				},
+				_1: {
+					ctor: '::',
+					_0: {
+						type_: _ebberg$bergd$Model$Interrogator,
+						title: 'Interrogator',
+						desc: _ebberg$bergd$Content$contentInterrogator,
+						roll: {ctor: '[]'},
+						level: 3
+					},
+					_1: {
+						ctor: '::',
+						_0: {
+							type_: _ebberg$bergd$Model$ArmorMastery,
+							title: 'Armor Mastery',
+							desc: _ebberg$bergd$Content$contentArmorMastery,
+							roll: {ctor: '[]'},
+							level: 4
+						},
+						_1: {
+							ctor: '::',
+							_0: {
+								type_: _ebberg$bergd$Model$Heirloom,
+								title: 'Heirloom',
+								desc: _ebberg$bergd$Content$contentHeirloom,
+								roll: {
+									ctor: '::',
+									_0: _ebberg$bergd$Model$RollCha,
+									_1: {ctor: '[]'}
+								},
+								level: 5
+							},
+							_1: {ctor: '[]'}
+						}
+					}
+				}
+			}
+		}
+	}
+};
+var _ebberg$bergd$Model$theSecurityMoveSet = {
+	ctor: '::',
+	_0: {title: 'The Security Officer\'s Moves', moves: _ebberg$bergd$Model$theSecurityMoves, id: 'SecurityOfficerMoves'},
+	_1: {ctor: '[]'}
+};
+var _ebberg$bergd$Model$theIntelligenceMoves = {
+	ctor: '::',
+	_0: {
+		type_: _ebberg$bergd$Model$Professional,
+		title: 'Professional',
+		desc: _ebberg$bergd$Content$contentProfessional,
+		roll: {ctor: '[]'},
+		level: 1
+	},
+	_1: {
+		ctor: '::',
+		_0: {
+			type_: _ebberg$bergd$Model$TrapExpert,
+			title: 'Trap Expert',
+			desc: _ebberg$bergd$Content$contentTrapExpert,
+			roll: {
+				ctor: '::',
+				_0: _ebberg$bergd$Model$RollDex,
+				_1: {ctor: '[]'}
+			},
+			level: 1
+		},
+		_1: {
+			ctor: '::',
+			_0: {
+				type_: _ebberg$bergd$Model$TricksOfTheTrade,
+				title: 'Tricks of the Trade',
+				desc: _ebberg$bergd$Content$contentTricksOfTheTrade,
+				roll: {
+					ctor: '::',
+					_0: _ebberg$bergd$Model$RollDex,
+					_1: {ctor: '[]'}
+				},
+				level: 1
+			},
+			_1: {
+				ctor: '::',
+				_0: {
+					type_: _ebberg$bergd$Model$Backstab,
+					title: 'Backstab',
+					desc: _ebberg$bergd$Content$contentBackstab,
+					roll: {
+						ctor: '::',
+						_0: _ebberg$bergd$Model$RollDex,
+						_1: {ctor: '[]'}
+					},
+					level: 1
+				},
+				_1: {
+					ctor: '::',
+					_0: {
+						type_: _ebberg$bergd$Model$Poisoner,
+						title: 'Poisoner',
+						desc: _ebberg$bergd$Content$contentPoisoner,
+						roll: {ctor: '[]'},
+						level: 1
+					},
+					_1: {
+						ctor: '::',
+						_0: {
+							type_: _ebberg$bergd$Model$Cautious,
+							title: 'Cautious',
+							desc: _ebberg$bergd$Content$contentCautious,
+							roll: {ctor: '[]'},
+							level: 2
+						},
+						_1: {
+							ctor: '::',
+							_0: {
+								type_: _ebberg$bergd$Model$Connections,
+								title: 'Connections',
+								desc: _ebberg$bergd$Content$contentConnections,
+								roll: {
+									ctor: '::',
+									_0: _ebberg$bergd$Model$RollCha,
+									_1: {ctor: '[]'}
+								},
+								level: 3
+							},
+							_1: {
+								ctor: '::',
+								_0: {
+									type_: _ebberg$bergd$Model$ShootFirst,
+									title: 'Shoot First',
+									desc: _ebberg$bergd$Content$contentShootFirst,
+									roll: {ctor: '[]'},
+									level: 4
+								},
+								_1: {
+									ctor: '::',
+									_0: {
+										type_: _ebberg$bergd$Model$CheapShot,
+										title: 'Cheap Shot',
+										desc: _ebberg$bergd$Content$contentCheapShot,
+										roll: {ctor: '[]'},
+										level: 5
+									},
+									_1: {ctor: '[]'}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+};
+var _ebberg$bergd$Model$theIntelligenceMoveSet = {
+	ctor: '::',
+	_0: {title: 'The Intelligence Officer\'s Moves', moves: _ebberg$bergd$Model$theIntelligenceMoves, id: 'IntelligenceOfficerMoves'},
+	_1: {ctor: '[]'}
+};
+var _ebberg$bergd$Model$CharacterTypeError = {ctor: 'CharacterTypeError'};
+var _ebberg$bergd$Model$TheSmuggler = {ctor: 'TheSmuggler'};
+var _ebberg$bergd$Model$theSmuggler = {
+	str: 13,
+	dex: 8,
+	con: 9,
+	wis: 15,
+	$int: 12,
+	cha: 16,
+	moves: A2(
+		_elm_lang$core$Basics_ops['++'],
+		_ebberg$bergd$Model$theSmugglerSpellbookMoveSet,
+		A2(_elm_lang$core$Basics_ops['++'], _ebberg$bergd$Model$theSmugglerMoveSet, _ebberg$bergd$Model$basicMoveSet)),
+	name: 'The Smuggler',
+	desc: '',
+	twist: '',
+	finale: '',
+	origin: 'The Wizard',
+	type_: _ebberg$bergd$Model$TheSmuggler,
+	baseHP: 4,
+	baseDamage: _ebberg$bergd$Model$RollFour,
+	statIncreases: {ctor: '[]'}
+};
+var _ebberg$bergd$Model$TheScientist = {ctor: 'TheScientist'};
+var _ebberg$bergd$Model$theScientist = {
+	str: 15,
+	dex: 8,
+	con: 16,
+	wis: 13,
+	$int: 12,
+	cha: 9,
+	moves: A2(_elm_lang$core$Basics_ops['++'], _ebberg$bergd$Model$theScientistMoveSet, _ebberg$bergd$Model$basicMoveSet),
+	name: 'The Scientist',
+	desc: _ebberg$bergd$Content$contentTheScientist,
+	twist: _ebberg$bergd$Content$contentTheScientistTwist,
+	finale: _ebberg$bergd$Content$contentTheScientistFinale,
+	origin: 'The Barbarian',
+	type_: _ebberg$bergd$Model$TheScientist,
+	baseHP: 8,
+	baseDamage: _ebberg$bergd$Model$RollTen,
+	statIncreases: {
+		ctor: '::',
+		_0: 'con',
+		_1: {
+			ctor: '::',
+			_0: 'con',
+			_1: {
+				ctor: '::',
+				_0: 'str',
+				_1: {
+					ctor: '::',
+					_0: 'int',
+					_1: {ctor: '[]'}
+				}
+			}
+		}
+	}
+};
+var _ebberg$bergd$Model$TheBiomechanic = {ctor: 'TheBiomechanic'};
+var _ebberg$bergd$Model$theBiomechanic = {
+	str: 13,
+	dex: 8,
+	con: 15,
+	wis: 16,
+	$int: 12,
+	cha: 9,
+	moves: A2(
+		_elm_lang$core$Basics_ops['++'],
+		_ebberg$bergd$Model$theBiomechanicSpellbookMoveSet,
+		A2(_elm_lang$core$Basics_ops['++'], _ebberg$bergd$Model$theBiomechanicMoveSet, _ebberg$bergd$Model$basicMoveSet)),
+	name: 'The Biomechanic',
+	desc: _ebberg$bergd$Content$contentTheBiomechanic,
+	twist: _ebberg$bergd$Content$contentTheBiomechanicTwist,
+	finale: _ebberg$bergd$Content$contentTheBiomechanicFinale,
+	origin: 'The Cleric',
+	type_: _ebberg$bergd$Model$TheBiomechanic,
+	baseHP: 8,
+	baseDamage: _ebberg$bergd$Model$RollSix,
+	statIncreases: {
+		ctor: '::',
+		_0: 'wis',
+		_1: {
+			ctor: '::',
+			_0: 'wis',
+			_1: {
+				ctor: '::',
+				_0: 'con',
+				_1: {
+					ctor: '::',
+					_0: 'int',
+					_1: {ctor: '[]'}
+				}
+			}
+		}
+	}
+};
+var _ebberg$bergd$Model$TheEngineer = {ctor: 'TheEngineer'};
+var _ebberg$bergd$Model$theEngineer = {
+	str: 15,
+	dex: 8,
+	con: 13,
+	wis: 16,
+	$int: 12,
+	cha: 9,
+	moves: A2(_elm_lang$core$Basics_ops['++'], _ebberg$bergd$Model$theEngineerMoveSet, _ebberg$bergd$Model$basicMoveSet),
+	name: 'The Engineering Officer',
+	desc: _ebberg$bergd$Content$contentTheEngineer,
+	twist: _ebberg$bergd$Content$contentTheEngineerTwist,
+	finale: _ebberg$bergd$Content$contentTheEngineerFinale,
+	origin: 'The Druid',
+	type_: _ebberg$bergd$Model$TheEngineer,
+	baseHP: 6,
+	baseDamage: _ebberg$bergd$Model$RollSix,
+	statIncreases: {
+		ctor: '::',
+		_0: 'int',
+		_1: {
+			ctor: '::',
+			_0: 'wis',
+			_1: {
+				ctor: '::',
+				_0: 'str',
+				_1: {
+					ctor: '::',
+					_0: 'wis',
+					_1: {ctor: '[]'}
+				}
+			}
+		}
+	}
+};
+var _ebberg$bergd$Model$TheNavigator = {ctor: 'TheNavigator'};
+var _ebberg$bergd$Model$theNavigator = {
+	str: 8,
+	dex: 15,
+	con: 13,
+	wis: 16,
+	$int: 9,
+	cha: 12,
+	moves: A2(_elm_lang$core$Basics_ops['++'], _ebberg$bergd$Model$theNavigatorMoveSet, _ebberg$bergd$Model$basicMoveSet),
+	name: 'The Navigation Officer',
+	desc: _ebberg$bergd$Content$contentTheNavigator,
+	twist: _ebberg$bergd$Content$contentTheNavigatorTwist,
+	finale: _ebberg$bergd$Content$contentTheNavigatorFinale,
+	origin: 'The Ranger',
+	type_: _ebberg$bergd$Model$TheNavigator,
+	baseHP: 8,
+	baseDamage: _ebberg$bergd$Model$RollEight,
+	statIncreases: {
+		ctor: '::',
+		_0: 'dex',
+		_1: {
+			ctor: '::',
+			_0: 'wis',
+			_1: {
+				ctor: '::',
+				_0: 'wis',
+				_1: {
+					ctor: '::',
+					_0: 'con',
+					_1: {ctor: '[]'}
+				}
+			}
+		}
+	}
+};
+var _ebberg$bergd$Model$ThePilot = {ctor: 'ThePilot'};
+var _ebberg$bergd$Model$thePilot = {
+	str: 8,
+	dex: 15,
+	con: 9,
+	wis: 13,
+	$int: 16,
+	cha: 12,
+	moves: A2(
+		_elm_lang$core$Basics_ops['++'],
+		_ebberg$bergd$Model$thePilotSpellbookMoveSet,
+		A2(_elm_lang$core$Basics_ops['++'], _ebberg$bergd$Model$thePilotMoveSet, _ebberg$bergd$Model$basicMoveSet)),
+	name: 'The Pilot',
+	desc: _ebberg$bergd$Content$contentThePilot,
+	twist: _ebberg$bergd$Content$contentThePilotTwist,
+	finale: _ebberg$bergd$Content$contentThePilotFinale,
+	origin: 'The Wizard',
+	type_: _ebberg$bergd$Model$ThePilot,
+	baseHP: 4,
+	baseDamage: _ebberg$bergd$Model$RollFour,
+	statIncreases: {
+		ctor: '::',
+		_0: 'int',
+		_1: {
+			ctor: '::',
+			_0: 'int',
+			_1: {
+				ctor: '::',
+				_0: 'dex',
+				_1: {
+					ctor: '::',
+					_0: 'con',
+					_1: {ctor: '[]'}
+				}
+			}
+		}
+	}
+};
+var _ebberg$bergd$Model$TheIntelligence = {ctor: 'TheIntelligence'};
+var _ebberg$bergd$Model$theIntelligence = {
+	str: 12,
+	dex: 16,
+	con: 8,
+	wis: 9,
+	$int: 13,
+	cha: 15,
+	moves: A2(_elm_lang$core$Basics_ops['++'], _ebberg$bergd$Model$theIntelligenceMoveSet, _ebberg$bergd$Model$basicMoveSet),
+	name: 'The Intelligence Officer',
+	desc: _ebberg$bergd$Content$contentIntelligence,
+	twist: _ebberg$bergd$Content$contentIntelligenceTwist,
+	finale: _ebberg$bergd$Content$contentIntelligenceFinale,
+	origin: 'The Thief',
+	type_: _ebberg$bergd$Model$TheIntelligence,
+	baseHP: 6,
+	baseDamage: _ebberg$bergd$Model$RollFour,
+	statIncreases: {
+		ctor: '::',
+		_0: 'dex',
+		_1: {
+			ctor: '::',
+			_0: 'dex',
+			_1: {
+				ctor: '::',
+				_0: 'cha',
+				_1: {
+					ctor: '::',
+					_0: 'con',
+					_1: {ctor: '[]'}
+				}
+			}
+		}
+	}
+};
+var _ebberg$bergd$Model$TheSecurity = {ctor: 'TheSecurity'};
+var _ebberg$bergd$Model$theSecurity = {
+	str: 16,
+	dex: 8,
+	con: 15,
+	wis: 12,
+	$int: 9,
+	cha: 13,
+	moves: A2(_elm_lang$core$Basics_ops['++'], _ebberg$bergd$Model$theSecurityMoveSet, _ebberg$bergd$Model$basicMoveSet),
+	name: 'The Security Officer',
+	desc: _ebberg$bergd$Content$contentSecurityOfficer,
+	twist: _ebberg$bergd$Content$contentSecurityOfficerTwist,
+	finale: _ebberg$bergd$Content$contentSecurityOfficerFinale,
+	origin: 'The Fighter',
+	type_: _ebberg$bergd$Model$TheSecurity,
+	baseHP: 10,
+	baseDamage: _ebberg$bergd$Model$RollTen,
+	statIncreases: {
+		ctor: '::',
+		_0: 'con',
+		_1: {
+			ctor: '::',
+			_0: 'dex',
+			_1: {
+				ctor: '::',
+				_0: 'str',
+				_1: {
+					ctor: '::',
+					_0: 'str',
+					_1: {ctor: '[]'}
+				}
+			}
+		}
+	}
+};
+var _ebberg$bergd$Model$TheFirstMate = {ctor: 'TheFirstMate'};
+var _ebberg$bergd$Model$theFirstMate = {
+	str: 9,
+	dex: 8,
+	con: 12,
+	wis: 13,
+	$int: 15,
+	cha: 16,
+	moves: A2(_elm_lang$core$Basics_ops['++'], _ebberg$bergd$Model$theFirstMateMoveSet, _ebberg$bergd$Model$basicMoveSet),
+	name: 'The First Mate',
+	desc: _ebberg$bergd$Content$contentTheFirstMate,
+	twist: _ebberg$bergd$Content$contentTheFirstMateTwist,
+	finale: _ebberg$bergd$Content$contentTheFirstMateFinale,
+	origin: 'The Bard',
+	type_: _ebberg$bergd$Model$TheFirstMate,
+	baseHP: 6,
+	baseDamage: _ebberg$bergd$Model$RollSix,
+	statIncreases: {
+		ctor: '::',
+		_0: 'int',
+		_1: {
+			ctor: '::',
+			_0: 'cha',
+			_1: {
+				ctor: '::',
+				_0: 'cha',
+				_1: {
+					ctor: '::',
+					_0: 'con',
+					_1: {ctor: '[]'}
+				}
+			}
+		}
+	}
+};
+var _ebberg$bergd$Model$TheCaptain = {ctor: 'TheCaptain'};
+var _ebberg$bergd$Model$theCaptain = {
+	str: 15,
+	dex: 8,
+	con: 13,
+	wis: 12,
+	$int: 9,
+	cha: 16,
+	moves: A2(_elm_lang$core$Basics_ops['++'], _ebberg$bergd$Model$theCaptainMoveSet, _ebberg$bergd$Model$basicMoveSet),
+	name: 'The Captain',
+	desc: _ebberg$bergd$Content$contentTheCaptain,
+	twist: _ebberg$bergd$Content$contentTheCaptainTwist,
+	finale: _ebberg$bergd$Content$contentTheCaptainFinale,
+	origin: 'The Paladin',
+	type_: _ebberg$bergd$Model$TheCaptain,
+	baseHP: 10,
+	baseDamage: _ebberg$bergd$Model$RollTen,
+	statIncreases: {
+		ctor: '::',
+		_0: 'wis',
+		_1: {
+			ctor: '::',
+			_0: 'str',
+			_1: {
+				ctor: '::',
+				_0: 'cha',
+				_1: {
+					ctor: '::',
+					_0: 'cha',
+					_1: {ctor: '[]'}
+				}
+			}
+		}
+	}
+};
+var _ebberg$bergd$Model$characters = {
+	ctor: '::',
+	_0: _ebberg$bergd$Model$theCaptain,
+	_1: {
+		ctor: '::',
+		_0: _ebberg$bergd$Model$theFirstMate,
+		_1: {
+			ctor: '::',
+			_0: _ebberg$bergd$Model$theSecurity,
+			_1: {
+				ctor: '::',
+				_0: _ebberg$bergd$Model$theIntelligence,
+				_1: {
+					ctor: '::',
+					_0: _ebberg$bergd$Model$thePilot,
+					_1: {
+						ctor: '::',
+						_0: _ebberg$bergd$Model$theNavigator,
+						_1: {
+							ctor: '::',
+							_0: _ebberg$bergd$Model$theEngineer,
+							_1: {
+								ctor: '::',
+								_0: _ebberg$bergd$Model$theBiomechanic,
+								_1: {
+									ctor: '::',
+									_0: _ebberg$bergd$Model$theScientist,
+									_1: {ctor: '[]'}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+};
+var _ebberg$bergd$Model$maybeGetCharacter = function (type_) {
+	return _elm_lang$core$List$head(
+		A2(
+			_elm_lang$core$List$filter,
+			function ($char) {
+				return _elm_lang$core$Native_Utils.eq($char.type_, type_);
+			},
+			_ebberg$bergd$Model$characters));
+};
+var _ebberg$bergd$Model$TheDirector = {ctor: 'TheDirector'};
+var _ebberg$bergd$Model$SelectCharacter = {ctor: 'SelectCharacter'};
+var _ebberg$bergd$Model$playerToCharacterType = function (s) {
+	var _p8 = s;
+	switch (_p8) {
+		case 'GM':
+			return _ebberg$bergd$Model$TheDirector;
+		case 'Captain Lola (Paladin)':
+			return _ebberg$bergd$Model$TheCaptain;
+		case 'Dar (Bard)':
+			return _ebberg$bergd$Model$TheFirstMate;
+		case 'Ix (Fighter)':
+			return _ebberg$bergd$Model$TheSecurity;
+		case 'Tommy the Cat (Thief)':
+			return _ebberg$bergd$Model$TheIntelligence;
+		case 'Mac (Wizard)':
+			return _ebberg$bergd$Model$ThePilot;
+		case 'Drav (Cleric)':
+			return _ebberg$bergd$Model$TheBiomechanic;
+		case 'Aero (Druid)':
+			return _ebberg$bergd$Model$TheEngineer;
+		case 'Dr Pachinka (Barbarian)':
+			return _ebberg$bergd$Model$TheScientist;
+		case 'ZarrN (Ranger)':
+			return _ebberg$bergd$Model$TheNavigator;
+		case 'Select Player':
+			return _ebberg$bergd$Model$SelectCharacter;
+		default:
+			return _ebberg$bergd$Model$CharacterTypeError;
+	}
+};
+var _ebberg$bergd$Model$ScreenTypeError = {ctor: 'ScreenTypeError'};
+var _ebberg$bergd$Model$Prep = {ctor: 'Prep'};
+var _ebberg$bergd$Model$CharacterChoices = {ctor: 'CharacterChoices'};
+var _ebberg$bergd$Model$Inventory = {ctor: 'Inventory'};
+var _ebberg$bergd$Model$CharacterSheet = {ctor: 'CharacterSheet'};
+var _ebberg$bergd$Model$MakeMove = {ctor: 'MakeMove'};
+var _ebberg$bergd$Model$ViewCharacters = {ctor: 'ViewCharacters'};
